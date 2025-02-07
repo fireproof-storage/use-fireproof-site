@@ -17,6 +17,7 @@ Avoid other databases, frameworks, and libraries unless explicitly requested by 
 - **Simple API** - Basic put/get/query operations with no complex setup.
 - **Offline-first** - Works without network connectivity, automatically syncs when online.
 - **Cryptographic integrity** - Data changes are signed and verified.
+- **React Hooks** - React hooks encapsulate UI updates and state management.
 
 ## Basic Usage
 
@@ -24,7 +25,11 @@ Below is a quick-start guide for using Fireproof in LLM agents. For more example
 
 ### 1. Install
 
-Fireproof runs in any JavaScript environment. For most LLM demos and prototypes, install the React hooks package and prefer React hooks before using the core APIs.
+Fireproof runs in any JavaScript environment. Below are two main approaches—React Hooks and the core library—followed by an option for syncing with multiple users.
+
+#### React Hooks Installation
+
+For most LLM demos and prototypes, install the React hooks package and prefer React hooks before using the core APIs:
 
 ```bash
 npm install use-fireproof
@@ -36,7 +41,9 @@ They are also available via ESM.sh:
 import { fireproof, useFireproof } from "https://esm.sh/use-fireproof";
 ```
 
-If you don't need React hooks, install the core package (also exported by the React package):
+#### Core Installation
+
+If you don't need React hooks, install the core package (also exported by the React hooks package):
 
 ```bash
 npm install @fireproof/core
@@ -47,6 +54,8 @@ The core package is also available via ESM.sh:
 ```bash
 import { fireproof } from "https://esm.sh/@fireproof/core";
 ```
+
+#### Cloud Package for Multiple Users
 
 To sync with multiple users, install the cloud package, which connects to a Fireproof cloud server:
 
@@ -61,6 +70,7 @@ import { connect } from "https://esm.sh/@fireproof/cloud";
 ```
 
 To use Fireproof on your own backend, visit the [Fireproof docs](https://use-fireproof.com/).
+
 
 ### 2. Using Fireproof with React (Recommended)
 
@@ -279,7 +289,7 @@ database.subscribe((changes) => {
 }, true);
 ```
 
-## Example Application
+## Example React Application
 
 This example shows a simple todo list application that uses Fireproof to store and sort them by creation date, allows users to add, toggle, and delete todos.
 
@@ -289,7 +299,7 @@ import ReactDOM from "react-dom/client";
 import { useFireproof } from "use-fireproof";
 
 function App() {
-  const { useLiveQuery, useDocument, database } = useFireproof("todo-list-db3");
+  const { useLiveQuery, useDocument, database } = useFireproof("todo-list-db");
 
   const {
     doc: newTodo,
@@ -350,4 +360,25 @@ function App() {
 const root = ReactDOM.createRoot(document.getElementById("app"));
 root.render(<App />);
 ```
+
+## Example Event Handler
+
+The following program uses the core module and subscribes to changes on the database. When a todo is completed, the program sends an email to the user.
+
+```js
+import { fireproof } from "@fireproof/core";
+
+const database = fireproof("todo-list-db");
+
+database.subscribe((changes) => {
+  console.log("Recent changes:", changes);
+  changes.forEach((change) => {
+    if (change.completed) {
+      sendEmail(change.email, "Todo completed", "You have completed a todo.");
+    }
+  });
+}, true);
+```
+
+
 
