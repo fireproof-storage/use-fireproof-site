@@ -134,7 +134,15 @@ const queryResult = useLiveQuery(
 #### Sortable Lists in React
 ```js
 function App() {
-  const { ledger, useLiveQuery } = useFireproof("my-llm-agent-ledger");
+  const { database, useLiveQuery } = useFireproof("my-llm-agent-ledger");
+  
+  // Add example of initializing first items
+  async function initializeList() {
+    await database.put({ _id: "item1", list: "xyz", position: 1000 });
+    await database.put({ _id: "item2", list: "xyz", position: 2000 });
+    await database.put({ _id: "item3", list: "xyz", position: 3000 });
+  }
+  
   const queryResult = useLiveQuery(
     (doc) => [doc.list, doc.position], 
     { descending: true, limit: 5, prefix: ["xyz"] }
@@ -148,7 +156,7 @@ function App() {
       list: "xyz", 
       position: (secondDoc.position + thirdDoc.position) / 2 
     };
-    await ledger.put(newDoc);
+    await database.put(newDoc);
   }
 
   return (
@@ -161,6 +169,7 @@ function App() {
           </li>
         ))}
       </ul>
+      <button onClick={initializeList}>Initialize List</button>
       <button onClick={insertThird}>Insert new doc at 3rd position</button>
     </div>
   );
@@ -196,42 +205,42 @@ function AgentUI() {
 
 If you're not using React, you can use the core API directly:
 
-#### Create or Load a Ledger
+#### Create or Load a Ledger Database
 ```js
 import { fireproof } from "@fireproof/core";
 
-const ledger = fireproof("my-llm-agent-ledger");
+const database = fireproof("my-llm-agent-ledger");
 ```
 
 #### Put and Get Documents
 ```js
 // Auto-generated ID
-const ok = await ledger.put({ text: "LLM conversation data", timestamp: Date.now() });
-const loadedDoc = await ledger.get(ok.id);
+const ok = await database.put({ text: "LLM conversation data", timestamp: Date.now() });
+const loadedDoc = await database.get(ok.id);
 
 // Explicit ID
-await ledger.put({ 
+await database.put({ 
   _id: "user-profile:abc@example.com", 
   text: "LLM conversation data", 
   timestamp: Date.now() 
 });
-const profileDoc = await ledger.get("user-profile:abc@example.com");
+const profileDoc = await database.get("user-profile:abc@example.com");
 ```
 
 #### Query Data
 ```js
 // Basic query
-const response = await ledger.query("timestamp", { descending: true, limit: 5 });
+const response = await database.query("timestamp", { descending: true, limit: 5 });
 
 // Query with specific key
-const response = await ledger.query("agentId", { 
+const response = await database.query("agentId", { 
   descending: true, 
   limit: 5, 
   key: "llm-agent-1" 
 });
 
 // Group and filter documents
-const response = await ledger.query(
+const response = await database.query(
   (doc) => [doc.agent, doc.timestamp], 
   { descending: true, limit: 5, prefix: ["llm-agent-1"] }
 );
@@ -239,7 +248,7 @@ const response = await ledger.query(
 
 #### Sortable Lists
 ```js
-const response = await ledger.query(
+const response = await database.query(
   (doc) => [doc.list, doc.position], 
   { descending: true, limit: 5, prefix: ["xyz"] }
 );
@@ -252,12 +261,12 @@ const newDoc = {
   list: "xyz", 
   position: (secondDoc.position + thirdDoc.position) / 2 
 };
-await ledger.put(newDoc);
+await database.put(newDoc);
 ```
 
 #### Date-based Queries
 ```js
-const response = await ledger.query(
+const response = await database.query(
   (doc) => [doc.date.getFullYear(), doc.date.getMonth(), doc.date.getDate()],
   { descending: true, limit: 5, prefix: [2024, 11] }
 );
@@ -265,7 +274,7 @@ const response = await ledger.query(
 
 #### Real-time Updates
 ```js
-ledger.subscribe((changes) => {
+database.subscribe((changes) => {
   console.log("Recent changes:", changes);
 }, true);
 ```
