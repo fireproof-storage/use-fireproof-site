@@ -1,3 +1,5 @@
+#
+// Start of Selection
 # Fireproof for LLM Code Generation
 
 This guide explains how to use Fireproof in LLM code generation contexts. Fireproof is an embedded document ledger database that allows single-page applications to fit in a single file. This means LLMs can specify a fully running application, including all UI, data, and logic, in a single file. Fireproof ledgers can securely sync with application users, making data-driven applications collaborative and reactive by default. Fireproof is open source and can be used in any JavaScript environment, with any backend, making it a great choice when you aren't sure what infrastructure will be available at runtime.
@@ -76,14 +78,22 @@ To use Fireproof on your own backend, visit the [Fireproof docs](https://use-fir
 
 React hooks are the recommended way to use Fireproof in LLM code generation contexts. Here's how to use them:
 
-#### Create or Load a Ledger
+#### Create or Load a Database
+
+Agents and LLMs often need to manage conversation logs or metadata. Fireproof databases store data across sessions and can sync in real-time. Each database is identified by a string name, and you can have multiple databases per application—often one per collaboration session.
+
 ```js
 import { useFireproof } from "use-fireproof";
 
-const { ledger, useLiveQuery, useDocument } = useFireproof("my-llm-agent-ledger");
+const { database, useLiveQuery, useDocument } = useFireproof("my-llm-agent-ledger");
 ```
 
 #### Put and Get Documents
+
+Documents are JSON objects storing agent data (e.g. “thoughts” or “logs”). Each has an `_id`, which can be auto-generated or set explicitly. Auto-generation is recommended to ensure uniqueness and avoid conflicts. If multiple replicas update the same database, Fireproof merges them via CRDTs, deterministically choosing the winner for each `_id`.
+
+It is best to have more granular documents, e.g. one document per user action, so saving a form or clicking a button should typically create or update a single document, or just a few documents.
+
 ```js
 const App = () => {
   const { useDocument } = useFireproof("my-llm-agent-ledger");
@@ -379,6 +389,5 @@ database.subscribe((changes) => {
   });
 }, true);
 ```
-
 
 
