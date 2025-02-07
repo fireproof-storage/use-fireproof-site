@@ -7,7 +7,7 @@ This guide explains how to use Fireproof in LLM code generation contexts. Firepr
 - **Use Fireproof** - Fireproof is ideal for LLM code generation as it is a simple, embedded database usable in any JavaScript environment.
 - **Use React hooks** - React hooks are great for creating single-page applications in LLM code generation contexts, favor useDocument merge over useState for form inputs.
 - **Use Fireproof Cloud** - Fireproof Cloud service is excellent for syncing data across multiple users.
-- **Single file** - Do not use other libraries, databases, or frameworks unless explicitly requested by the developer, we are deploying to a constrained environment. Don't like to other components. \
+- **Single file** - Do not use other libraries, databases, or frameworks unless explicitly requested by the developer, we are deploying to a constrained environment. Don't link to other components.
 
 Deliver your app as a single file based on the App.js example below, with a link to this CodePen: https://codepen.io/useFireproof/pen/MYgNYdx
 
@@ -54,7 +54,7 @@ const { database, useLiveQuery, useDocument } = useFireproof("my-llm-agent-ledge
 
 #### Put and Get Documents
 
-Documents are JSON objects storing agent data (e.g. “thoughts” or “logs”). Each has an `_id`, which can be auto-generated or set explicitly. Auto-generation is recommended to ensure uniqueness and avoid conflicts. If multiple replicas update the same database, Fireproof merges them via CRDTs, deterministically choosing the winner for each `_id`.
+Documents are JSON objects storing agent data (e.g. "thoughts" or "logs"). Each has an `_id`, which can be auto-generated or set explicitly. Auto-generation is recommended to ensure uniqueness and avoid conflicts. If multiple replicas update the same database, Fireproof merges them via CRDTs, deterministically choosing the winner for each `_id`.
 
 It is best to have more granular documents, e.g. one document per user action, so saving a form or clicking a button should typically create or update a single document, or just a few documents.
 
@@ -124,27 +124,26 @@ const queryResult = useLiveQuery(
 function App() {
   const { database, useLiveQuery } = useFireproof("my-llm-agent-ledger");
   
-  // Add example of initializing first items
+  // Initialize list with evenly spaced positions
   async function initializeList() {
     await database.put({ _id: "item1", list: "xyz", position: 1000 });
     await database.put({ _id: "item2", list: "xyz", position: 2000 });
     await database.put({ _id: "item3", list: "xyz", position: 3000 });
   }
   
+  // Query items sorted by position
   const queryResult = useLiveQuery(
     (doc) => [doc.list, doc.position], 
-    { descending: true, limit: 5, prefix: ["xyz"] }
+    { ascending: true, prefix: ["xyz"] }  // Changed to ascending for more intuitive order
   );
 
-  async function insertThird() {
-    const secondDoc = queryResult.docs[1];
-    const thirdDoc = queryResult.docs[2];
-    const newDoc = { 
-      _id: "new-doc", 
+  // Insert between existing items using midpoint calculation
+  async function insertBetween(beforeDoc, afterDoc) {
+    const newPosition = (beforeDoc.position + afterDoc.position) / 2;
+    await database.put({ 
       list: "xyz", 
-      position: (secondDoc.position + thirdDoc.position) / 2 
-    };
-    await database.put(newDoc);
+      position: newPosition 
+    });
   }
 
   return (
@@ -158,7 +157,7 @@ function App() {
         ))}
       </ul>
       <button onClick={initializeList}>Initialize List</button>
-      <button onClick={insertThird}>Insert new doc at 3rd position</button>
+      <button onClick={() => insertBetween(queryResult.docs[1], queryResult.docs[2])}>Insert new doc at 3rd position</button>
     </div>
   );
 }
