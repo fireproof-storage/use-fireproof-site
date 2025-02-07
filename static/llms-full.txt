@@ -36,7 +36,7 @@ They are also available via ESM.sh:
 import { fireproof, useFireproof } from "https://esm.sh/use-fireproof";
 ```
 
-If you don’t need React hooks, install the core package (also exported by the React package):
+If you don't need React hooks, install the core package (also exported by the React package):
 
 ```bash
 npm install @fireproof/core
@@ -62,52 +62,18 @@ import { connect } from "https://esm.sh/@fireproof/cloud";
 
 To use Fireproof on your own backend, visit the [Fireproof docs](https://use-fireproof.com/).
 
+### 2. Using Fireproof with React (Recommended)
 
-### 2. Create or Load a Ledger
+React hooks are the recommended way to use Fireproof in LLM code generation contexts. Here's how to use them:
 
-Agents and LLMs often need to manage conversation logs or metadata. Fireproof ledgers store data across sessions and can sync in real-time. Each ledger is identified by a string name, and you can have multiple ledgers per application—often one per collaboration session.
-
-```js
-import { fireproof } from "@fireproof/core";
-
-const ledger = fireproof("my-llm-agent-ledger");
-```
-
-In a React component, use the `useFireproof` hook:
-
+#### Create or Load a Ledger
 ```js
 import { useFireproof } from "use-fireproof";
 
 const { ledger, useLiveQuery, useDocument } = useFireproof("my-llm-agent-ledger");
 ```
 
-### 3. Put and Get Documents
-
-Documents are JSON objects storing agent data (e.g. “thoughts” or “logs”). Each has an `_id`, which can be auto-generated or set explicitly. Auto-generation is recommended to ensure uniqueness and avoid conflicts. If multiple replicas update the same ledger, Fireproof merges them via CRDTs, deterministically choosing the winner for each `_id`.
-
-Example with auto-generated `_id`:
-```js
-const ok = await ledger.put({ text: "LLM conversation data", timestamp: Date.now() });
-console.log("Saved doc:", ok);
-const loadedDoc = await ledger.get(ok.id);
-console.log("Loaded doc:", loadedDoc);
-```
-
-It is best to have more granular documents, eg one document per user action, so saving a form or clicking a button should typically create or update a single document, or just a few documents.
-
-You can also control the `_id` field explicitly, in cases where you want to force a conflict across replicas:
-
-```js
-// Save a new profile:
-await ledger.put({ _id: "user-profile:abc@example.com", text: "LLM conversation data", timestamp: Date.now() });
-
-// Retrieve it later:
-const profileDoc = await ledger.get("user-profile:abc@example.com");
-console.log("Loaded profile:", profileDoc);
-```
-
-Use the `useDocument` hook to create and update a document in a React component:
-
+#### Put and Get Documents
 ```js
 const App = () => {
   const { useDocument } = useFireproof("my-llm-agent-ledger");
@@ -122,28 +88,19 @@ const App = () => {
 }
 ```
 
-The `useDocument` hook can also take an `_id` parameter, in which case it will load the document with that `_id` and allow you to update it. This is useful when the id is part of the application routing parameters or state.
-
+Load an existing document by ID:
 ```js
 const { useDocument } = useFireproof("my-llm-agent-ledger");
 
 const { doc, merge, save, reset } = useDocument({ _id: "user-profile:abc@example.com" });
 ```
 
-### 4. Query Data
-
-Fireproof offers dynamic indexes for queries, accessible via `useLiveQuery` in React. For example, to fetch recent sessions, you can do this in a React component:
-
+#### Query Data with React
 ```js
-import React from "react";
-import { useFireproof } from "use-fireproof";
-
 function App() {
   const { useLiveQuery } = useFireproof("my-llm-agent-ledger");
   const queryResult = useLiveQuery("timestamp", { descending: true, limit: 5 });
   
-  console.log("Recent sessions from useLiveQuery:", queryResult.docs);
-
   return (
     <div>
       <h3>Recent Sessions</h3>
@@ -157,61 +114,31 @@ function App() {
 }
 ```
 
-Or outside of React:
+Query with specific filters:
 ```js
-// Query by timestamp descending to get the most recent:
-const response = await ledger.query("timestamp", { descending: true, limit: 5 });
-console.log("Recent sessions:", response.docs);
+const queryResult = useLiveQuery("agentId", { 
+  descending: true, 
+  limit: 5, 
+  key: "llm-agent-1" 
+});
 ```
 
-To query all docs with a specific tag, index that field and use the `key` parameter. In a React component:
-
+Group and filter documents:
 ```js
-  const queryResult = useLiveQuery("agentId", { descending: true, limit: 5, key: "llm-agent-1" });
-
-  console.log("Recent sessions for llm-agent-1 from useLiveQuery:", queryResult.docs);
-```
-
-Or outside of React:
-```js
-const response = await ledger.query("agentId", { descending: true, limit: 5, key: "llm-agent-1" });
-console.log("Recent sessions:", response.docs);
-```
-
-You can group or filter documents by a specific field. Indices can be defined with a JavaScript function or a string path. Below is a query that groups by `agent`, sorts by `timestamp`, and returns the newest five for agent "llm-agent-1". In a React component:
-
-```js
-  const queryResult = useLiveQuery(
-    (doc) => [doc.agent, doc.timestamp], 
-    { descending: true, limit: 5, prefix: ["llm-agent-1"] }
-  );
-
-  console.log("Recent sessions for llm-agent-1 from useLiveQuery:", queryResult.docs);
-```
-
-Or outside of React:
-```js
-const response = await ledger.query(
+const queryResult = useLiveQuery(
   (doc) => [doc.agent, doc.timestamp], 
   { descending: true, limit: 5, prefix: ["llm-agent-1"] }
 );
-console.log("Recent sessions for llm-agent-1:", response.docs);
 ```
 
-To create sortable lists using a numeric index, insert new items by placing them between existing ones. For example, in a React component:
-
+#### Sortable Lists in React
 ```js
-import React from "react";
-import { useFireproof } from "use-fireproof";
-
 function App() {
   const { ledger, useLiveQuery } = useFireproof("my-llm-agent-ledger");
   const queryResult = useLiveQuery(
     (doc) => [doc.list, doc.position], 
     { descending: true, limit: 5, prefix: ["xyz"] }
   );
-
-  console.log("Documents on list xyz from useLiveQuery:", queryResult.docs);
 
   async function insertThird() {
     const secondDoc = queryResult.docs[1];
@@ -240,10 +167,82 @@ function App() {
 }
 ```
 
-Or outside of React:
+#### Date-based Queries in React
 ```js
-const response = await ledger.query((doc) => [doc.list, doc.position], { descending: true, limit: 5, prefix: ["xyz"] });
-console.log("Documents on list xyz:", response.docs);
+const queryResult = useLiveQuery(
+  (doc) => [doc.date.getFullYear(), doc.date.getMonth(), doc.date.getDate()],
+  { descending: true, limit: 5, prefix: [2024, 11] }
+);
+```
+
+#### Real-time Updates with React
+```js
+function AgentUI() {
+  const { useLiveQuery } = useFireproof("my-llm-agent-ledger");
+  const conversation = useLiveQuery("timestamp", { descending: true, limit: 10 });
+  const logs = conversation.docs;
+
+  return (
+    <ul>
+      {logs.map(log => (
+        <li key={log._id}>{log.text}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### 3. Using Fireproof without React
+
+If you're not using React, you can use the core API directly:
+
+#### Create or Load a Ledger
+```js
+import { fireproof } from "@fireproof/core";
+
+const ledger = fireproof("my-llm-agent-ledger");
+```
+
+#### Put and Get Documents
+```js
+// Auto-generated ID
+const ok = await ledger.put({ text: "LLM conversation data", timestamp: Date.now() });
+const loadedDoc = await ledger.get(ok.id);
+
+// Explicit ID
+await ledger.put({ 
+  _id: "user-profile:abc@example.com", 
+  text: "LLM conversation data", 
+  timestamp: Date.now() 
+});
+const profileDoc = await ledger.get("user-profile:abc@example.com");
+```
+
+#### Query Data
+```js
+// Basic query
+const response = await ledger.query("timestamp", { descending: true, limit: 5 });
+
+// Query with specific key
+const response = await ledger.query("agentId", { 
+  descending: true, 
+  limit: 5, 
+  key: "llm-agent-1" 
+});
+
+// Group and filter documents
+const response = await ledger.query(
+  (doc) => [doc.agent, doc.timestamp], 
+  { descending: true, limit: 5, prefix: ["llm-agent-1"] }
+);
+```
+
+#### Sortable Lists
+```js
+const response = await ledger.query(
+  (doc) => [doc.list, doc.position], 
+  { descending: true, limit: 5, prefix: ["xyz"] }
+);
 
 // Insert a new doc into the 3rd position:
 const secondDoc = response.docs[1];
@@ -256,51 +255,15 @@ const newDoc = {
 await ledger.put(newDoc);
 ```
 
-For date-based queries (year, month, day), you can do it in a React component:
-
-```js
-  const queryResult = useLiveQuery(
-    (doc) => [doc.date.getFullYear(), doc.date.getMonth(), doc.date.getDate()],
-    { descending: true, limit: 5, prefix: [2024, 11] }
-  );
-
-  console.log("Documents on date (React):", queryResult.docs);
-```
-
-Or outside of React:
+#### Date-based Queries
 ```js
 const response = await ledger.query(
   (doc) => [doc.date.getFullYear(), doc.date.getMonth(), doc.date.getDate()],
   { descending: true, limit: 5, prefix: [2024, 11] }
 );
-console.log("Documents on date:", response.docs);
 ```
 
-### 5. Realtime Updates and React Hooks
-
-To automatically update your agent’s UI when ledger data changes, subscribe to changes directly or use the official React hooks. In a React app, it looks like this:
-
-```js
-import { useFireproof } from "use-fireproof";
-
-function AgentUI() {
-  const { useLiveQuery } = useFireproof("my-llm-agent-ledger");
-  const conversation = useLiveQuery("timestamp", { descending: true, limit: 10 });
-  const logs = conversation.docs;
-  // logs update automatically as data changes
-
-  return (
-    <ul>
-      {logs.map(log => (
-        <li key={log._id}>{log.text}</li>
-      ))}
-    </ul>
-  );
-}
-```
-
-Or you can pass a callback to `ledger.subscribe` to get notified of changes, which is useful for backend processes that want to react to changes in real-time.
-
+#### Real-time Updates
 ```js
 ledger.subscribe((changes) => {
   console.log("Recent changes:", changes);
@@ -317,62 +280,62 @@ import ReactDOM from "react-dom/client";
 import { useFireproof } from "use-fireproof";
 
 function App() {
-	const { useLiveQuery, useDocument, database } = useFireproof("todo-list-db3");
+  const { useLiveQuery, useDocument, database } = useFireproof("todo-list-db3");
 
-	const {
-		doc: newTodo,
-		merge: mergeNewTodo,
-		save: saveNewTodo,
-		reset: resetNewTodo
-	} = useDocument({
-		todo: "",
-		completed: false,
-		createdAt: Date.now()
-	});
+  const {
+    doc: newTodo,
+    merge: mergeNewTodo,
+    save: saveNewTodo,
+    reset: resetNewTodo
+  } = useDocument({
+    todo: "",
+    completed: false,
+    createdAt: Date.now()
+  });
 
-	const result = useLiveQuery("createdAt", { limit: 10, descending: true });
+  const result = useLiveQuery("createdAt", { limit: 10, descending: true });
 
-	const handleInputChange = (e) => {
-		mergeNewTodo({ todo: e.target.value });
-	};
+  const handleInputChange = (e) => {
+    mergeNewTodo({ todo: e.target.value });
+  };
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		saveNewTodo();
-		resetNewTodo();
-	};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    saveNewTodo();
+    resetNewTodo();
+  };
 
-	database.allDocs().then((docs) => console.log(docs));
+  database.allDocs().then((docs) => console.log(docs));
 
-	return (
-		<div>
-			<form onSubmit={handleSubmit}>
-				<label htmlFor="todo">Todo</label>
-				<input
-					id="todo"
-					type="text"
-					onChange={handleInputChange}
-					value={newTodo.todo}
-				/>
-			</form>
-			<ul>
-				{result.docs.map((doc) => (
-					<li key={doc._id}>
-						<div>
-							<input
-								type="checkbox"
-								checked={doc.completed}
-								onChange={() => database.put({ ...doc, completed: !doc.completed })}
-							/>
-							<span>{doc.todo}</span>
-							<button onClick={() => database.del(doc._id)}>Delete</button>
-						</div>
-						<div>{new Date(doc.createdAt).toISOString()}</div>
-					</li>
-				))}
-			</ul>
-		</div>
-	);
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="todo">Todo</label>
+        <input
+          id="todo"
+          type="text"
+          onChange={handleInputChange}
+          value={newTodo.todo}
+        />
+      </form>
+      <ul>
+        {result.docs.map((doc) => (
+          <li key={doc._id}>
+            <div>
+              <input
+                type="checkbox"
+                checked={doc.completed}
+                onChange={() => database.put({ ...doc, completed: !doc.completed })}
+              />
+              <span>{doc.todo}</span>
+              <button onClick={() => database.del(doc._id)}>Delete</button>
+            </div>
+            <div>{new Date(doc.createdAt).toISOString()}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 const root = ReactDOM.createRoot(document.getElementById("app"));
