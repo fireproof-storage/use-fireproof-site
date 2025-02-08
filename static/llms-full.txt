@@ -82,7 +82,7 @@ const { doc, merge, save, reset } = useDocument({ _id: "user-profile:abc@example
 
 #### Query Data with React
 
-Data is queried by collated indexes defined by the application. Collation is inspired by CouchDB. Use numbers when possible for sorting continuous data. You might want to sort by a number while at the same time presenting a derived string, eg for time or sort position.
+Data is queried by collated indexes defined by the application. Collation is inspired by CouchDB. Use numbers when possible for sorting continuous data. You might want to sort by a number while at the same time presenting a derived string, e.g. for time or sort position.
 
 ```js
 function App() {
@@ -187,6 +187,60 @@ function AgentUI() {
   );
 }
 ```
+
+### Additional Query Patterns, Best Practices, and Common Mistakes
+
+While the snippets above illustrate basic usage, here are some important considerations for robust query patterns and performance:
+
+1. **Filtering Nulls and Missing Fields**  
+   Use optional chaining safely to avoid errors:
+   ```js
+   const queryResult = useLiveQuery(
+     (doc) => doc?.text?.length ?? 0,
+     { descending: true, limit: 5 }
+   );
+   ```
+   This ensures that if `doc.text` is undefined or null, we treat the length as 0 rather than leading to errors or unintended falsy values.
+
+2. **Sorting by Multiple Fields**  
+   If you want to sort by multiple fields (e.g. `doc?.text?.length` as a primary key and `doc?.timestamp` as a fallback), return an array:
+   ```js
+   const queryResult = useLiveQuery(
+     (doc) => [
+       doc?.text?.length ?? 0,
+       doc?.timestamp ?? Number.MAX_SAFE_INTEGER
+     ],
+     { prefix: [4] }
+   );
+   ```
+   Here, if two items have the same `text.length`, they are ordered further by the `timestamp`. We use a default large number if `timestamp` is missing. In the example above, we are querying for documents with a `text.length` of 4, and sorting them by `timestamp`.
+
+3. **Handling Large Datasets**  
+   When sorting on large document collections, keep performance in mind. The query function `(doc) => ...` is used to build an index by key. For very large data, consider:
+   - Restricting the query range using `prefix` or `key` options.  
+   - Indexing simpler numeric fields rather than computing strings on the fly.  
+   - Using incremental or partial queries instead of a single large, sorted dataset.
+
+4. **Common Pitfalls**  
+   - Avoid using something like `doc.text && doc.text.length || 0` because `doc.text && doc.text.length` can result in `false` if `doc.text.length` is 0. Use optional chaining: `doc?.text?.length ?? 0`.  
+
+5. **Real-time Updates and User Interaction**  
+   - For interactive lists or queries that need to filter or sort in real time, structure your `useLiveQuery` to keep the user experience responsive.  
+   - Combine sorting and filtering logic in one function if appropriate:
+     ```js
+     const userControlledQuery = useLiveQuery(
+       (doc) => {
+         // Hypothetical user-defined constraints
+         if (doc && doc.text && doc.type === currentTypeFilter) {
+           return [doc.text?.length ?? 0, doc.timestamp ?? 0];
+         }
+       },
+       { descending: false, limit: 20 }
+     );
+     ```
+   - Documents that do not match simply do not return.
+
+---
 
 ### 3. Using Fireproof without React
 
