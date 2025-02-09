@@ -79,6 +79,10 @@ async function putAndQuery() {
   console.log("Latest documents:", latest.docs);
 }
 
+database.subscribe((changes) => {
+  console.log("Changes:", changes)
+}, true)
+
 putAndQuery();
 ```
 
