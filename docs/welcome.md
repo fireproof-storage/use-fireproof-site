@@ -6,17 +6,36 @@ sidebar_position: 1
 
 [Fireproof](https://fireproof.storage) is an embedded database designed to bring **live data anywhere**. Quickly add live data to any app or page with our embedded database, reducing risk, cost, and complexity with provable secure synchronization using any backend.
 
-**Collaborative:** Multi-user sync for interactive apps
+**Faster:** Local-first zero latency database queries
 
-**Fast:** Local-first zero latency database queries
+**Cheaper:** Zero-setup development with minimal operational costs
 
-**Easy:** Zero-setup development with one line connection to any cloud
+**Safer:** End-to-end encrypted with cryptographic integrity
 
 Developers want to build features, not maintain complex stacks. Fireproof eliminates the traditional database setup, maintenance, and operations overhead, allowing developers to focus on building rich, local-first, collaborative apps. Fireproof turns any storage into an end-to-end encrypted, tamperproof ledger, empowering developers to build trustworthy apps that run anywhere with minimal operational cost and risk.
 
 ## Getting Started
 
-All it takes is `npm install @fireproof/core` and `import { fireproof } from '@fireproof/core'` in your project. Then you can open a ledger with `const ledger = await fireproof('my-ledger')` and write data with `ledger.put({ hello: 'world' })`. To query everything by date, `const { docs } = await ledger.query("created_at")`. Learn more about the [API](/docs/database-api/documents) or try the [React tutorial](/docs/react-tutorial).
+All it takes is:
+
+```bash
+npm install use-fireproof
+```
+
+And in your JavaScript or TypeScript file:
+
+```js
+import { fireproof } from 'use-fireproof'
+
+const { database } = fireproof("my-database")
+
+database.put({ hello: 'world' })
+
+const { docs } = await database.query("_id")
+
+console.log(docs)
+```
+
 
 ### What is Fireproof?
 
