@@ -10,8 +10,8 @@ const FeatureList = [
     icon: '🏗',
     description: (
       <>
-        Write shareable realtime apps without configuring anything. No setup makes Fireproof great
-        for <Link to="/docs/chatgpt-quick-start">ChatGPT quick starts</Link> and{' '}
+        Generate complete applications in a single file. Perfect for AI code generation with no setup required. Ideal for{' '}
+        <Link to="/docs/chatgpt-quick-start">ChatGPT quick starts</Link> and{' '}
         <Link to="https://codesandbox.io/s/fireproof-react-antd-f6zbi7?file=/src/App.tsx">
           code sandbox demos
         </Link>
@@ -25,9 +25,9 @@ const FeatureList = [
     icon: '🌩',
     description: (
       <>
-        Use your existing authentication system or Fireproof's sensible defaults.{' '}
-        <Link to="/docs/connect">Sync and share user-to-user</Link> and{' '}
-        <Link to="/docs/database-api/replication">replicate with any cloud.</Link>
+        Built-in sync and collaboration for AI-generated apps. Works offline-first with{' '}
+        <Link to="/docs/connect">automatic CRDT-based conflict resolution</Link> and{' '}
+        <Link to="/docs/database-api/replication">cloud replication</Link>.
       </>
     )
   },
@@ -37,8 +37,9 @@ const FeatureList = [
     icon: '🏔',
     description: (
       <>
-        Fireproof's <Link to="/docs/database-api/encryption">encrypted serverless backend</Link>{' '}
-        works anywhere, allowing you to tune security, price, and performance for your app.
+        Deploy anywhere - from code sandboxes to production.{' '}
+        <Link to="/docs/database-api/encryption">Perfect for rapid development and demos</Link>{' '}
+        that need to scale.
       </>
     )
   }

@@ -39,8 +39,8 @@ export default function Home() {
 
   return (
     <Layout
-      title={`Live database for the web`}
-      description="Simplify your application state with Fireproof."
+      title={`The embedded database for AI Code Generation`}
+      description="Generate complete, single-file applications with built-in data persistence and real-time sync."
     >
       <HomepageHeader />
       <main>
@@ -48,8 +48,7 @@ export default function Home() {
         <div className="container">
           <h2>📦 Lightweight install</h2>
           <p>
-            Live queries, database branches and snapshots, and file attachments make Fireproof ideal
-            for browser-based apps big or small.
+            Perfect for AI-generated single-file apps. Includes live queries, file attachments, and automatic persistence - everything you need in one package.
           </p>
 
           <CodeBlock language="jsx">npm install use-fireproof</CodeBlock>
@@ -58,33 +57,21 @@ export default function Home() {
             <Link to="https://www.npmjs.com/package/use-fireproof">use-fireproof</Link> module runs
             anywhere, with bundles built for Node.js and the browser, and optional <Link to="/docs/react-hooks/use-live-query">React hooks</Link>.
           </p>
-          <h2>🚀 Simple app state, anywhere</h2>
+          <h2>🚀 Generate complete applications</h2>
           <p>
-            Fireproof makes it easy to for JavaScript developers to{' '}
-            <a href="/docs/database-api/basics/">light up any app with live data</a>. For React
-            developers, check out the <Link to="/docs/react-tutorial">useLiveQuery tutorial</Link>{' '}
-            for the recommended auto-refresh APIs.
-            {/* </p>
-          <ThemedImage
-            className="margin-bottom--md margin-left--lg"
-            alt="useLiveQuery screenshot"
-            sources={{
-              light: '/img/code.png',
-              dark: '/img/code.png'
-            }}
-          />
-          <p> */}{' '}
-            Get started by writing features, and <Link to="/docs/database-api/replication">connect to the cloud</Link> after your app is awesome.
+            Perfect for AI code generation with no setup required. Ideal for ChatGPT quick starts and code sandbox demos.{' '}
+            For React developers, check out the <Link to="/docs/react-tutorial">useLiveQuery tutorial</Link>{' '}
+            for the recommended auto-refresh APIs. Get started by writing features, and <Link to="/docs/database-api/replication">connect to the cloud</Link> after your app is awesome.
           </p>
 
-          <h2>🔐 Verifiable CRDTs</h2>
+          <h2>🔐 Built-in sync and collaboration</h2>
           <p>
-            Every operation in Fireproof is{' '}
+            Works offline-first with automatic CRDT-based conflict resolution. Every operation is{' '}
             <Link to="/docs/database-api/encryption">end-to-end encrypted</Link> and{' '}
             <Link to="https://fireproof.storage/posts/from-mlops-to-point-of-sale:-merkle-proofs-and-data-locality/">
               accelerated by cryptographic proofs
             </Link>
-            , making it 🎮 suitable 🏦 for all your data needs. Offline and multi-leader operations are fully supported.
+            . Deploy anywhere - from code sandboxes to production.
           </p>
           <h2>📝 Open-source</h2>
           <p>
