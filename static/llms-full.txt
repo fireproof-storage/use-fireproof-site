@@ -135,9 +135,9 @@ function App() {
   
   // Initialize list with evenly spaced positions
   async function initializeList() {
-    await database.put({ _id: "item1", list: "xyz", position: 1000 });
-    await database.put({ _id: "item2", list: "xyz", position: 2000 });
-    await database.put({ _id: "item3", list: "xyz", position: 3000 });
+    await database.put({ list: "xyz", position: 1000 });
+    await database.put({ list: "xyz", position: 2000 });
+    await database.put({ list: "xyz", position: 3000 });
   }
   
   // Query items sorted by position
