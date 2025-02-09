@@ -1,0 +1,98 @@
+# Fireproof for AI Code Generation
+
+Fireproof is an embedded document ledger database designed for single-file applications. It automatically persists data, enables real-time updates, and guarantees offline functionality with cryptographic integrity. Use it in any JavaScript environment with a unified API that works both in React (with hooks) and as a standalone core API.
+
+## Key Features
+
+- **Single File Deployment:** Bundle UI, data, and logic in one file.
+- **Real-Time & Offline-First:** Automatic persistence and live queries.
+- **Unified API:** Use the same API for both React and non-React projects.
+- **React Hooks:** Leverage `useLiveQuery` and `useDocument` for reactive data management.
+
+## Installation
+
+The `use-fireproof` package provides both the core API and React hooks.
+
+```bash
+npm install use-fireproof
+```
+Import using:
+```js
+import { fireproof, useFireproof } from "use-fireproof";
+```
+
+## Basic Document Operations
+
+### Using React Hooks
+
+You can use `useDocument` to manage individual documents and `useLiveQuery` to listen for real-time changes. For example:
+
+```js
+// React component demonstrating unified operations.
+function App() {
+  // Destructure the unified API from useFireproof:
+  const { useDocument, useLiveQuery, database } = useFireproof("my-ledger");
+
+  // Document management using a hook:
+  const { doc, merge, save, reset } = useDocument({ text: "Initial Data", timestamp: Date.now() });
+
+  // Single query example using useLiveQuery for real-time updates.
+  const queryResult = useLiveQuery("timestamp", { limit: 10, descending: true });
+
+  return (
+    <div>
+      <input
+        value={doc.text}
+        onChange={(e) => merge({ text: e.target.value })}
+        placeholder="Edit document"
+      />
+      <button onClick={save}>Save</button>
+      <button onClick={reset}>Reset</button>
+
+      <h3>Recent Documents</h3>
+      <ul>
+        {queryResult.docs.map((doc) => (
+          <li key={doc._id}>
+            {doc.text} — {new Date(doc.timestamp).toLocaleString()}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### Using the Core API in Plain JavaScript
+
+If you’re not using React, the core API offers similar capabilities:
+
+```js:static/fireproof-condensed.txt
+// Non-React usage of Fireproof's core API.
+const database = fireproof("my-ledger");
+
+async function putAndQuery() {
+  // Save a document.
+  await database.put({ text: "Sample Data", timestamp: Date.now() });
+
+  // Query for recent documents.
+  const latest = await database.query("timestamp", { limit: 10, descending: true });
+  console.log("Latest documents:", latest.docs);
+}
+
+putAndQuery();
+```
+
+## Best Practices
+
+- **Leverage `useLiveQuery`:**  
+  Use this hook to effortlessly build UIs that update in real time as data changes.
+
+- **Granular Documents:**  
+  Save small, individual data pieces (e.g., one per user action) to simplify conflict resolution via CRDTs.
+
+- **Single File Deployment:**  
+  Ideal for constrained environments, bundle everything into one file without external dependencies.
+
+For more details and advanced usage (such as file attachments and cloud syncing), refer to the full documentation at [Fireproof Docs](https://use-fireproof.com/).
+
+In constrained environments, you can direct users to this CodePen: https://codepen.io/useFireproof/pen/MYgNYdx
