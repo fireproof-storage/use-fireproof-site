@@ -80,7 +80,7 @@ In short, this is indexing the ledger by the `date` field, and will ignore any d
 The `useLiveQuery` hook will automatically refresh the `response` object when the ledger changes. The response object contains the `docs` array, which is the list of todos. The response also has `rows` which are the index rows, in this case they will have a `key` with the `date` field of the todo, and an `id` field with the document id of the todo. In more complex applications you can customize the `value` of these rows, for instance to provide full-name from first and last. [Read more about indexes and queries in the documentation.](/docs/database-api/index-query)
 
 
-In our application, the todos are displayed by the following JSX, which renders their `text` field. The event handler for updating the todo is written inline. Notice how `ledger.put` is used to toggle the `completed` field when the checkbox is clicked:
+In our application, the todos are displayed by the following JSX, which renders their `text` field. The event handler for updating the todo is written inline. Notice how `database.put` is used to toggle the `completed` field when the checkbox is clicked:
 
 ```jsx
 <ul>
@@ -97,7 +97,7 @@ In our application, the todos are displayed by the following JSX, which renders 
 </ul>
 ```
 
-For convenience, the `ledger` object is attached to the `useLiveQuery` and `useDocument` hooks. The `ledger.put` function is used to update the document, and it will automatically refresh the query results. Read more in the [document API documentation](/docs/database-api/documents). In this tutorial, we'll also use the `useDocument` hook to manage documents. The `ledger.put` function is better for toggling the completed field, but `useDocument` will be useful for creating new todos.
+For convenience, the `database` object is attached to the `useLiveQuery` and `useDocument` hooks. The `database.put` function is used to update the document, and it will automatically refresh the query results. Read more in the [document API documentation](/docs/database-api/documents). In this tutorial, we'll also use the `useDocument` hook to manage documents. The `database.put` function is better for toggling the completed field, but `useDocument` will be useful for creating new todos.
 
 ### Create a New Todo
 
@@ -151,13 +151,12 @@ Here's the example to-do list that initializes the ledger and sets up automatic 
 
 ```jsx
 import { useFireproof } from "use-fireproof";
-import "./App.css";
 
 function App() {
-  const { useLiveQuery, useDocument } = useFireproof("my-todo-app")
-  const response = useLiveQuery('date', {limit: 10, descending: true})
-  const todos = response.docs
-  const [todo, setTodo, saveTodo] = useDocument(() => ({
+  const { database, useLiveQuery, useDocument } = useFireproof("my-todo-app")
+  const result = useLiveQuery('date', {limit: 10, descending: true})
+  const todos = result.docs
+  const { doc: todo, merge: mergeTodo, save: saveTodo, reset: resetTodo } = useDocument(() => ({
     text: "",
     date: Date.now(),
     completed: false
@@ -165,20 +164,23 @@ function App() {
 
   return (
     <>
-      <input
-        title="text"
-        type="text"
-        value={todo.text as string}
-        onChange={(e) => setTodo({text: e.target.value})}
-      />
-      <button
-        onClick={async () => {
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault()
           await saveTodo()
-          setTodo()
+          resetTodo()
         }}
       >
-        Save
-      </button>
+        <input
+          title="text"
+          type="text"
+          value={todo.text as string}
+          onChange={(e) => mergeTodo({text: e.target.value})}
+        />
+        <button type="submit">
+          Save
+        </button>
+      </form>
       <ul>
         {todos.map((todo) => (
           <li key={todo._id}>
@@ -187,7 +189,7 @@ function App() {
               type="checkbox"
               checked={todo.completed as boolean}
               onChange={() =>
-                response.ledger.put({
+                database.put({
                   ...todo,
                   completed: !todo.completed,
                 })}

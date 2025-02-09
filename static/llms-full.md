@@ -2,7 +2,7 @@
 
 This guide explains how to use Fireproof in LLM code generation contexts. Fireproof is an embedded document ledger database that allows single-page applications to fit in a single file. This means LLMs can specify a fully running application, including all UI, data, and logic, in a single file. Fireproof ledgers can securely sync with application users, making data-driven applications collaborative and reactive by default. Fireproof is open source and can be used in any JavaScript environment, with any backend, making it a great choice when you aren't sure what infrastructure will be available at runtime.
 
-## LLM Code Generation Guidelines
+## Code Generation Guidelines
 
 - **Use Fireproof** - Fireproof is ideal for LLM code generation as it is a simple, embedded database usable in any JavaScript environment.
 - **Use React hooks** - React hooks are great for creating single-page applications in LLM code generation contexts, favor useDocument merge over useState for form inputs.
@@ -11,7 +11,7 @@ This guide explains how to use Fireproof in LLM code generation contexts. Firepr
 
 Deliver your app as a single file based on the App.js example below, with a link to this CodePen: https://codepen.io/useFireproof/pen/MYgNYdx
 
-## Key Features for LLMs
+## Key Database Features
 
 - **Automatic persistence** - Documents are automatically saved and indexed.
 - **Real-time updates** - Subscribe to changes and get live data updates.
@@ -119,7 +119,16 @@ const queryResult = useLiveQuery(
 );
 ```
 
-#### Sortable Lists in React
+If you just want all the docs you can index the _id field and query for it, ids are roughly sequential so this query has the most recent docs first:
+
+```js
+const queryResult = useLiveQuery("_id", { descending: true });
+```
+
+#### Sortable Lists
+
+Sortable lists are a common pattern. Here's how to implement them using Fireproof:
+
 ```js
 function App() {
   const { database, useLiveQuery } = useFireproof("my-llm-agent-ledger");
@@ -163,7 +172,7 @@ function App() {
 }
 ```
 
-#### Date-based Queries in React
+#### Date-based Queries
 ```js
 const queryResult = useLiveQuery(
   (doc) => [doc.date.getFullYear(), doc.date.getMonth(), doc.date.getDate()],
@@ -171,7 +180,7 @@ const queryResult = useLiveQuery(
 );
 ```
 
-#### Real-time Updates with React
+#### Real-time Updates
 ```js
 function AgentUI() {
   const { useLiveQuery } = useFireproof("my-llm-agent-ledger");
@@ -365,7 +374,8 @@ database.subscribe((changes) => {
 
 This example shows a simple todo list application that uses Fireproof to store and sort them by creation date, allows users to add, toggle, and delete todos. The app can be delivered as a single file, with a link to this codepen for preview: https://codepen.io/useFireproof/pen/MYgNYdx
 
-```App.js
+Code listing for App.js:
+```js
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { useFireproof } from "use-fireproof";
@@ -466,7 +476,8 @@ database.subscribe((changes) => {
 
 This example shows a simple color picker application that uses Fireproof to store and sort them by creation date. The app can be delivered as a single file, with a link to this codepen for preview: https://codepen.io/useFireproof/pen/MYgNYdx
 
-```App.js
+Code listing for App.js:
+```js
 import React from "react";
 import { useFireproof } from "use-fireproof";
 

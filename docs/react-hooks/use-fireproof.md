@@ -17,11 +17,11 @@ import { useFireproof } from 'use-fireproof';
 
 function MyComponent() {
   const { 
-    ledger, 
+    database, 
     useLiveQuery, 
     useDocument 
   } = useFireproof(
-    "ledger-name" | ledgerInstance
+    "ledger-name" | databaseInstance
   );
 
   return (<div>
@@ -30,7 +30,7 @@ function MyComponent() {
 }
 ```
 
- The return value looks like `{ useLiveQuery, useDocument, ledger }` where the `ledger` is the Fireproof instance that you can interact with using `put` and `get`, or via your indexes. The `useLiveQuery` and `useDocument` functions are configured versions of the top-level hooks and are the recommended API to update your React app in real-time.
+ The return value looks like `{ useLiveQuery, useDocument, database }` where the `database` is the Fireproof instance that you can interact with using `put` and `get`, or via your indexes. The `useLiveQuery` and `useDocument` functions are configured versions of the top-level hooks and are the recommended API to update your React app in real-time.
 
 ### Use Live Query
 
@@ -40,7 +40,7 @@ You can configure `useLiveQuery` with a ledger name by instantiating the `useFir
 import { useFireproof } from 'use-fireproof';
 
 export default TodoList = () => {
-  const { ledger, useLiveQuery } = useFireproof("my-todo-app")
+  const { database, useLiveQuery } = useFireproof("my-todo-app")
   const todos = useLiveQuery('date').docs
   ...
 ```
@@ -61,15 +61,15 @@ export default TodoList = () => {
 
 ### Ledger subscription
 
-Changes made via remote sync peers, or other members of your cloud replica group will appear automatically if you use the `useLiveQuery` and `useDocument` APIs. This make writing collaborative workgroup software, and multiplayer games super easy. If you want to manage subscriptions to the ledger yourself, you can use the `ledger.subscribe` function. This is useful if you want to manage your own state, or if you want to use the ledger API directly instead of the hooks.
+Changes made via remote sync peers, or other members of your cloud replica group will appear automatically if you use the `useLiveQuery` and `useDocument` APIs. This make writing collaborative workgroup software, and multiplayer games super easy. If you want to manage subscriptions to the ledger yourself, you can use the `database.subscribe` function. This is useful if you want to manage your own state, or if you want to use the database API directly instead of the hooks.
 
-Here is an example that uses direct ledger APIs instead of document and query hooks. You might see this in more complex applications that want to manage low-level details.
+Here is an example that uses direct database APIs instead of document and query hooks. You might see this in more complex applications that want to manage low-level details.
 
 ```js
 import { useFireproof } from 'use-fireproof';
 
 function MyComponent() {
-  const { ready, ledger } = useFireproof("ledger-name");
+  const { ready, database } = useFireproof("ledger-name");
 
   // set a default empty document
   const [doc, setDoc] = useState({});
@@ -77,15 +77,15 @@ function MyComponent() {
   // run the loader on first mount
   useEffect(() => {
     const getDataFn = async () => {
-      setDoc(await ledger.get('my-doc-id'));
+      setDoc(await database.get('my-doc-id'));
     };
     getDataFn();
-    return ledger.subscribe(getDataFn);
-  }, [ledger]);
+    return database.subscribe(getDataFn);
+  }, [database]);
 
   // a function to change the value of the document
   const updateFn = async () => {
-    await ledger.put({ _id: 'my-doc-id', hello: 'world', updated_at: new Date() });
+    await database.put({ _id: 'my-doc-id', hello: 'world', updated_at: new Date() });
   };
 
   // render the document with a click handler to update it
@@ -111,7 +111,7 @@ function mulberry32(a) {
 }
 const rand = mulberry32(1); // determinstic fixtures
 
-export default async function loadFixtures(ledger) {
+export default async function loadFixtures(database) {
   const nextId = (prefix = '') => prefix + rand().toString(32).slice(2);
   const listTitles = ['Building Apps', 'Having Fun', 'Getting Groceries'];
   const todoTitles = [
@@ -135,13 +135,13 @@ export default async function loadFixtures(ledger) {
   ];
   let ok;
   for (let j = 0; j < 3; j++) {
-    ok = await ledger.put({
+    ok = await database.put({
       title: listTitles[j],
       type: 'list',
       _id: nextId('' + j),
     });
     for (let i = 0; i < todoTitles[j].length; i++) {
-      await ledger.put({
+      await database.put({
         _id: nextId(),
         title: todoTitles[j][i],
         listId: ok.id,
