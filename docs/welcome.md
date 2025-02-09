@@ -27,7 +27,7 @@ And in your JavaScript or TypeScript file:
 ```js
 import { fireproof } from 'use-fireproof'
 
-const { database } = fireproof("my-database")
+const database = fireproof("my-database")
 
 database.put({ hello: 'world' })
 
