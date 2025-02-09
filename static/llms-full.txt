@@ -1,6 +1,6 @@
-# Fireproof for LLM Code Generation
+# Fireproof for AI Code Generation
 
-This guide explains how to use Fireproof in LLM code generation contexts. Fireproof is an embedded document ledger database that allows single-page applications to fit in a single file. This means LLMs can specify a fully running application, including all UI, data, and logic, in a single file. Fireproof ledgers can securely sync with application users, making data-driven applications collaborative and reactive by default. Fireproof is open source and can be used in any JavaScript environment, with any backend, making it a great choice when you aren't sure what infrastructure will be available at runtime.
+This guide explains how to use Fireproof in AI code generation contexts. Fireproof is an embedded document ledger database that allows single-page applications to fit in a single file. This means LLMs can specify a fully running application, including all UI, data, and logic, in a single file. Fireproof ledgers can securely sync with application users, making data-driven applications collaborative and reactive by default. Fireproof is open source and can be used in any JavaScript environment, with any backend, making it a great choice when you aren't sure what infrastructure will be available at runtime.
 
 ## Code Generation Guidelines
 
