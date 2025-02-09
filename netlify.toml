@@ -1,4 +1,4 @@
 [[redirects]]
   from = "/"
-  to = "https://fireproof.storage"
+  to = "/docs/welcome/"
   status = 301
