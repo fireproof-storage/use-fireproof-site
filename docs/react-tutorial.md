@@ -105,7 +105,7 @@ Next, we'll add a form to create new todos. Notice how we get `useDocument` from
 
 ```js
 const { useDocument } = useFireproof("my-todo-app")
-const [todo, setTodo, saveTodo] = useDocument(() => ({
+const { doc: todo, merge: mergeTodo, save: saveTodo, reset: resetTodo } = useDocument(() => ({
     text: "",
     date: Date.now(),
     completed: false
@@ -129,8 +129,8 @@ Here is the JSX that renders the form. The common React pattern described above 
   />
   <button
     onClick={async () => {
-       await saveTodo()
-       setTodo()
+       saveTodo()
+       resetTodo()
     }}
   >
     Save
@@ -167,7 +167,7 @@ function App() {
       <form
         onSubmit={async (e) => {
           e.preventDefault()
-          await saveTodo()
+          saveTodo()
           resetTodo()
         }}
       >
