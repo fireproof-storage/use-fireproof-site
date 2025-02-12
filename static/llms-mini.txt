@@ -6,13 +6,13 @@ Fireproof is a lightweight embedded document database with encrypted live sync, 
 npm install use-fireproof
 ```
 
-The module is also available via ESM.sh:
+Works with ⚡️ ESM.sh:
 
 ```js
 import { useFireproof } from "https://esm.sh/use-fireproof";
 ```
 
-React example:
+React ⚛️ example:
 
 ```js
 import { useFireproof } from "use-fireproof";
@@ -32,7 +32,10 @@ function App() {
       <h2>Todos</h2>
       <ul>
         {todos.docs.map(todo => 
-          <li key={todo._id} onClick={() => database.put({...todo, done: !todo.done})}>
+          <li 
+            key={todo._id} 
+            onClick={() => database.put({...todo, done: !todo.done})}
+          >
             {todo.done ? "✅" : "❌"} {todo.text}
           </li>
         )}
