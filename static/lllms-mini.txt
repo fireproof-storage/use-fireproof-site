@@ -1,0 +1,45 @@
+# Fireproof Mini Guide
+
+Fireproof is a lightweight embedded document database with encrypted live sync, designed to make browser apps easy.
+
+```bash
+npm install use-fireproof
+```
+
+The module is also available via ESM.sh:
+
+```js
+import { useFireproof } from "https://esm.sh/use-fireproof";
+```
+
+React example:
+
+```js
+import { useFireproof } from "use-fireproof";
+
+function App() {
+  const { database, useDocument, useLiveQuery } = useFireproof("my-todos");
+  const { doc, merge, save, reset } = useDocument({ text: "" });
+  const todos = useLiveQuery("_id", { descending: true });
+
+  return (
+    <div>
+      <input 
+        value={doc.text}
+        onChange={e => merge({ text: e.target.value.toString() })}
+      />
+      <button onClick={() => save() && reset()}>Add</button>
+      <h2>Todos</h2>
+      <ul>
+        {todos.docs.map(todo => 
+          <li key={todo._id} onClick={() => database.put({...todo, done: !todo.done})}>
+            {todo.done ? "✅" : "❌"} {todo.text}
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+}
+```
+
+For JavaScript see [llms-full.txt](./llms-full.txt), full docs at https://use-fireproof.com
