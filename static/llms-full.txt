@@ -591,4 +591,6 @@ function App() {
 export default App;
 ```
 
+## See also
+
 See the lite docs at https://use-fireproof.com/llms-mini.txt and the basics at https://use-fireproof.com/llms.txt
