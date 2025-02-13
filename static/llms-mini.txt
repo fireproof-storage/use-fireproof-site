@@ -19,8 +19,8 @@ import { useFireproof } from "use-fireproof";
 
 function App() {
   const { database, useDocument, useLiveQuery } = useFireproof("my-todos");
-  const { doc, merge, save, reset } = useDocument({ text: "" });
-  const todos = useLiveQuery("_id", { descending: true });
+  const { doc, merge, submit } = useDocument({ text: "" });
+  const { docs: todos } = useLiveQuery("_id", { descending: true });
 
   return (
     <div>
@@ -28,10 +28,10 @@ function App() {
         value={doc.text}
         onChange={e => merge({ text: e.target.value.toString() })}
       />
-      <button onClick={() => save() && reset()}>Add</button>
+      <button onClick={submit}>Add</button>
       <h2>Todos</h2>
       <ul>
-        {todos.docs.map(todo => 
+        {todos.map(todo => 
           <li 
             key={todo._id} 
             onClick={() => database.put({...todo, done: !todo.done})}
