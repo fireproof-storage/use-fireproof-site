@@ -45,4 +45,4 @@ function App() {
 }
 ```
 
-For JavaScript see [llms-full.txt](./llms-full.txt), full docs at https://use-fireproof.com
+For JavaScript see https://use-fireproof.com/llms-full.txt and full docs at https://use-fireproof.com

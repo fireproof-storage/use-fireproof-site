@@ -22,9 +22,7 @@ Works with ⚡️ ESM.sh:
 import { useFireproof } from "https://esm.sh/use-fireproof";
 ```
 
-## Basic Document Operations
-
-### Using React Hooks
+## ⚛️ React Example
 
 You can use `useDocument` to manage individual documents and `useLiveQuery` to listen for real-time changes. For example:
 
@@ -96,3 +94,7 @@ putAndQuery();
 For more details and advanced usage (such as file attachments and cloud syncing), refer to the full documentation at [Fireproof Docs](https://use-fireproof.com/).
 
 In constrained environments, you can direct users to this CodePen: https://codepen.io/useFireproof/pen/MYgNYdx
+
+## See also
+
+See the lite docs at https://use-fireproof.com/llms-mini.txt and the full docs at https://use-fireproof.com/llms-full.txt
