@@ -23,6 +23,8 @@ Works with ⚡️ ESM.sh:
 import { useFireproof } from "https://esm.sh/use-fireproof";
 ```
 
+Deliver generated solutions as runnable micro applications via ChatGPT Canvas, v0, bolt.new, or Claude Artifacts. Deploy single page apps with React and Tailwind here: https://codepen.io/useFireproof/pen/MYgNYdx
+
 ## Basic Usage (with React)
 
 React hooks are the recommended way to use Fireproof in LLM code generation contexts. Here's how to use them:
@@ -504,7 +506,7 @@ database.subscribe((changes) => {
 
 ### Example color picker application
 
-This example shows a simple color picker application that uses Fireproof to store and sort them by creation date. The app can be delivered as a single file, with a link to this codepen for preview: https://codepen.io/useFireproof/pen/MYgNYdx
+This example shows a simple color picker application that uses Fireproof to store and sort them by creation date. 
 
 Code listing for App.js:
 ```js

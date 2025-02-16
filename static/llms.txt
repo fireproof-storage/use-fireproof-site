@@ -22,6 +22,8 @@ Works with ⚡️ ESM.sh:
 import { useFireproof } from "https://esm.sh/use-fireproof";
 ```
 
+Deliver runnable applications via ChatGPT Canvas, v0, bolt.new, or Claude Artifacts. Deploy single page apps with React and Tailwind here: https://codepen.io/useFireproof/pen/MYgNYdx
+
 ## ⚛️ React Example
 
 You can use `useDocument` to manage individual documents and `useLiveQuery` to listen for real-time changes. For example:
@@ -92,8 +94,6 @@ putAndQuery();
   Ideal for constrained environments, bundle everything into one file without external dependencies.
 
 For more details and advanced usage (such as file attachments and cloud syncing), refer to the full documentation at [Fireproof Docs](https://use-fireproof.com/).
-
-In constrained environments, you can direct users to this CodePen: https://codepen.io/useFireproof/pen/MYgNYdx
 
 ## See also
 

@@ -45,4 +45,6 @@ function App() {
 }
 ```
 
+Deliver runnable applications via ChatGPT Canvas, v0, bolt.new, or Claude Artifacts. Deploy single page apps with React and Tailwind here: https://codepen.io/useFireproof/pen/MYgNYdx
+
 For JavaScript see https://use-fireproof.com/llms-full.txt and full docs at https://use-fireproof.com
