@@ -25,7 +25,7 @@ import { useFireproof } from "https://esm.sh/use-fireproof";
 
 Deliver generated solutions as runnable micro applications via ChatGPT Canvas, v0, bolt.new, or Claude Artifacts. Deploy single page apps with React and Tailwind here: https://codepen.io/useFireproof/pen/MYgNYdx
 
-## Basic Usage (with React)
+## ⚛️ React Usage
 
 React hooks are the recommended way to use Fireproof in LLM code generation contexts. Here's how to use them:
 
@@ -126,8 +126,8 @@ function App() {
 }
 ```
 
-Query with specific filters:
-```js
+Query with specific filters using a key:
+```jsf
 const queryResult = useLiveQuery("agentId", { 
   descending: true, 
   limit: 5, 
@@ -135,7 +135,7 @@ const queryResult = useLiveQuery("agentId", {
 });
 ```
 
-Group and filter documents:
+To sort all documents withing a specific tag, use a view function and map by prefix (note that the function is sandboxed and can only access the document fields):
 ```js
 const queryResult = useLiveQuery(
   (doc) => [doc.agent, doc.timestamp], 
