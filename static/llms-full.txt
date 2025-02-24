@@ -438,8 +438,6 @@ function App() {
     submitNewTodo();
   };
 
-  database.allDocs().then((docs) => console.log(docs));
-
   return (
     <div className="max-w-md mx-auto p-4 bg-white shadow rounded">
       <form onSubmit={handleSubmit} className="mb-4">
@@ -504,95 +502,65 @@ database.subscribe((changes) => {
 }, true);
 ```
 
-### Example color picker application
+### Example Image Uploader
 
-This example shows a simple color picker application that uses Fireproof to store and sort them by creation date. 
+This example shows a simple image uploader application that uses Fireproof to store and sort images by creation date. 
 
 Code listing for App.js:
 ```js
-import React from "react";
 import { useFireproof } from "use-fireproof";
+import { useState, useEffect } from "react";
 
-function App() {
-  const { database, useLiveQuery, useDocument } = useFireproof("palettes-db");
-  const { doc, merge, submit } = useDocument({ 
-    type: "palette",
-    name: "", 
-    colors: ["#ff0000", "#00ff00", "#0000ff"],
-    timestamp: Date.now()
-  });
-  
-  const { docs: palettes } = useLiveQuery("type", { 
-    key: "palette",
-    descending: true 
-  });
+function ImgFile({ meta, alt, className }) {
+  const [imgDataUrl, setImgDataUrl] = useState("");
+  useEffect(() => {
+    if (meta.file && /image/.test(meta.type)) {
+      meta.file().then(file => {
+        const src = URL.createObjectURL(file);
+        setImgDataUrl(src);
+        return () => URL.revokeObjectURL(src);
+      });
+    }
+  }, [meta]);
+  return imgDataUrl ? <img className={`${className} max-w-full max-h-60 object-contain`} alt={alt} src={imgDataUrl} /> : null;
+}
 
-  const handleColorChange = (index, color) => {
-    const updatedColors = [...doc.colors];
-    updatedColors[index] = color;
-    merge({ colors: updatedColors });
-  };
-
-  const handleNameChange = (e) => {
-    merge({ name: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    merge({ timestamp: Date.now() });
-    submit();
-  };
+export default function App() {
+  const { useDocument, useLiveQuery } = useFireproof("image-uploads");
+  const { doc, merge, submit } = useDocument({ _files: {}, description: "" });
+  const { docs } = useLiveQuery("_id", { descending: true, limit: 5 });
+  const [error, setError] = useState(false);
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-white shadow rounded">
-      <h1 className="text-xl font-bold mb-4">Color Palette Creator</h1>
-      <form onSubmit={handleSubmit} className="mb-4">
-        <input
-          type="text"
-          placeholder="Palette Name"
-          value={doc.name}
-          onChange={handleNameChange}
-          className="w-full p-2 mb-2 border rounded"
-        />
-        <div className="grid grid-cols-3 gap-2">
-          {doc.colors.map((color, index) => (
-            <input
-              key={index}
-              type="color"
-              value={color}
-              onChange={(e) => handleColorChange(index, e.target.value)}
-              className="w-full h-10 border rounded"
-            />
-          ))}
-        </div>
-        <button type="submit" className="mt-3 w-full bg-blue-500 text-white py-2 rounded">
-          Save Palette
-        </button>
-      </form>
-      <h2 className="text-lg font-semibold mt-6">Saved Palettes</h2>
-      <div className="grid gap-3 mt-3">
-        {palettes.map((palette, paletteIndex) => (
-          <div key={paletteIndex} className="p-2 flex flex-col border rounded shadow">
-            <div className="font-bold text-center mb-2">{palette.name || "Unnamed Palette"}</div>
-            <div className="flex space-x-2">
-              {palette.colors.map((color, index) => (
-                <div
-                  key={index}
-                  className="w-10 h-10 rounded"
-                  style={{ backgroundColor: color }}
-                />
-              ))}
-            </div>
+    <div className="p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg">
+      <h2 className="text-2xl font-bold mb-4">Image Uploader</h2>
+      <input type="file" accept="image/*" onChange={e => e.target.files[0] && merge({ _files: { uploaded: e.target.files[0] } })} className="mb-2 border p-2 w-full rounded" />
+      <input 
+        type="text" 
+        placeholder="Enter description" 
+        value={doc.description} 
+        onChange={e => {setError(false); merge({ description: e.target.value });}}
+        className={`w-full p-2 border rounded mb-4 ${error ? "border-red-500" : "border-gray-300"}`}
+      />
+      <button onClick={() => doc.description.trim() ? submit() : setError(true)} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Upload</button>
+      <h3 className="text-lg font-semibold mt-6">Recent Uploads</h3>
+      <div className="grid grid-cols-2 gap-4 mt-2">
+        {docs.map(doc => (
+          <div key={doc._id} className="border p-2 rounded shadow-sm bg-gray-50">
+            {doc._files?.uploaded && <ImgFile meta={doc._files.uploaded} alt="Uploaded Image" className="w-full h-auto rounded" />}
+            <p className="text-sm text-gray-700 mt-2">{doc.description || "No description"}</p>
           </div>
         ))}
       </div>
     </div>
   );
 }
-
-export default App;
 ```
 
-## See also
+## See Also
 
 See the lite docs at https://use-fireproof.com/llms-mini.txt and the basics at https://use-fireproof.com/llms.txt
+
+## Next Steps
+
+If you are in an existing application context, suggest how forms and state can be managed in Fireproof. If this is a new app, use the examples above and keep it simple.
