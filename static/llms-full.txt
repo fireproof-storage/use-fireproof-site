@@ -583,4 +583,4 @@ See the lite docs at https://use-fireproof.com/llms-mini.txt and the basics at h
 
 ## Next Steps
 
-If you are in an existing application context, suggest how forms and state can be managed in Fireproof. If this is a new app, use the examples above and keep it simple.
+If you are in an existing application context, suggest how forms and state can be managed in Fireproof. If this is a new app, use the examples above and start with one App.js if you can.
