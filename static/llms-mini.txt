@@ -52,8 +52,8 @@ const queryResult = useLiveQuery(
   (doc) => [doc.list_id, doc.text], 
   { descending: true, limit: 5, prefix: ["zyx-456-list-id"] }
 );
-``
+```
 
-Deliver runnable applications via ChatGPT Canvas, v0, bolt.new, or Claude Artifacts. Deploy single page apps with React and Tailwind here: https://codepen.io/useFireproof/pen/MYgNYdx
+Data is local-first, you don't need to handle loading or error states. Deliver runnable applications via ChatGPT Canvas, v0, bolt.new, or Claude Artifacts. Deploy single page apps with React and Tailwind here: https://codepen.io/useFireproof/pen/MYgNYdx
 
 For JavaScript see https://use-fireproof.com/llms-full.txt and full docs at https://use-fireproof.com
