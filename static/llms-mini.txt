@@ -15,6 +15,7 @@ import { useFireproof } from "https://esm.sh/use-fireproof";
 React ⚛️ example:
 
 ```js
+import React from "react";
 import { useFireproof } from "use-fireproof";
 
 function App() {
