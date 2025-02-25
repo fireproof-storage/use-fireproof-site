@@ -214,6 +214,10 @@ function App() {
 }
 ```
 
+## Architecture: Where's My Data?
+
+Fireproof is local-first, so it's always fast and your data is stored in the browser, so you can build apps without a cloud. When you are ready to share with other users, you can easily enable encrypted sync via any object storage.
+
 ## Using Fireproof in JavaScript
 
 You can use the core API in HTML or on the backend. Instead of hooks, import the core API directly:
