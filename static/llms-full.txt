@@ -314,7 +314,7 @@ function handleSubmit(e) {
 
 ## Example React Application
 
-Code listing for todo tracker App.js:
+Code listing for todo tracker App.jsx:
 ```js
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -394,9 +394,9 @@ export default function App() {
 
 ### Example Image Uploader
 
-This example shows a simple image uploader application that uses Fireproof to store and sort images by creation date. 
+This React example shows a simple image uploader application that uses Fireproof to store and sort images by creation date. These APIs easily work with plain JavaScript also. 
 
-Code listing for App.js:
+Code listing for App.jsx:
 ```js
 import { useFireproof } from "use-fireproof";
 import { useState, useEffect } from "react";
