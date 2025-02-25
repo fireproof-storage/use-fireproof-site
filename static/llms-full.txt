@@ -51,9 +51,10 @@ It is best to have more granular documents, e.g. one document per user action, s
 const App = () => {
   const { useDocument } = useFireproof("my-ledger");
 
-  const { doc, merge, submit } = useDocument({ text: "", timestamp: Date.now() });
+  const { doc, merge, submit } = useDocument({ text: "" });
 
-  const queryResult = useLiveQuery("timestamp", { descending: true });
+  // _id is roughly monotonically increasing, this is most recent
+  const queryResult = useLiveQuery("_id", { descending: true, limit: 100 });
 
   return (
     <div>
@@ -70,7 +71,7 @@ const App = () => {
       <ul>
         {queryResult.docs.map((doc) => (
           <li key={doc._id}>
-            {doc.text} — {new Date(doc.timestamp).toLocaleString()}
+            {doc.text}
           </li>
         ))}
       </ul>
@@ -166,7 +167,7 @@ function App() {
   // Query items sorted by position
   const queryResult = useLiveQuery(
     (doc) => [doc.list, doc.position], 
-    { ascending: true, prefix: ["xyz"] }  // Changed to ascending for more intuitive order
+    { prefix: ["xyz"] }
   );
 
   // Insert between existing items using midpoint calculation
