@@ -1,4 +1,4 @@
-# Fireproof for AI Code Generation
+# Fireproof browser database API
 
 Fireproof is a lightweight embedded document database with encrypted live sync, designed to make browser apps easy. Use it in any JavaScript environment with a unified API that works both in React (with hooks) and as a standalone core API.
 
@@ -84,24 +84,23 @@ Address documents by a known key if you want to force conflict resolution or wor
 ```js
 const { useDocument } = useFireproof("my-ledger");
 
-const { doc, merge, save, reset } = useDocument({ _id: "user-profile:abc@example.com" });
+const { doc, merge, submit, save, reset } = useDocument({ _id: "user-profile:abc@example.com" });
 ```
 
 The `useDocument` hook provides several methods:
 - `merge(updates)`: Update the document with new fields
+- `submit(e)`: Handles form submission by preventing default, saving, and resetting
 - `save()`: Save the current document state
 - `reset()`: Reset to initial state
-- `submit(e)`: Handles form submission by preventing default, saving, and resetting
 
 For form-based creation flows, use `submit`:
 ```js
 <form onSubmit={submit}>
 ```
 
-For manual control, use `save` and `reset`:
+ChatGPT note: Canvas sandboxes the form submit event, there you should use button click events instead:
 ```js
-<button onClick={save}>Save Changes</button>
-<button onClick={reset}>Discard Changes</button>
+<button onClick={submit}>Save and Reset</button>
 ```
 
 #### Query Data with React
@@ -127,7 +126,7 @@ function App() {
 ```
 
 Query with specific filters using a key:
-```jsf
+```js
 const queryResult = useLiveQuery("agentId", { 
   descending: true, 
   limit: 5, 
@@ -135,7 +134,7 @@ const queryResult = useLiveQuery("agentId", {
 });
 ```
 
-To sort all documents withing a specific tag, use a view function and map by prefix (note that the function is sandboxed and can only access the document fields):
+To sort all documents withing a specific tag, use a view function and map by prefix (note that the function is sandboxed and can only access the document fields -- do not reference external variables):
 ```js
 const queryResult = useLiveQuery(
   (doc) => [doc.agent, doc.timestamp], 
@@ -583,4 +582,4 @@ See the lite docs at https://use-fireproof.com/llms-mini.txt and the basics at h
 
 ## Next Steps
 
-If you are in an existing application context, suggest how forms and state can be managed in Fireproof. If this is a new app, use the examples above and start with one App.js if you can.
+If you are in an existing application context, suggest how forms and state can be managed in Fireproof. If this is a new app, use the examples above and start with a running App.js if you can.
