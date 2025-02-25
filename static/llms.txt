@@ -105,8 +105,8 @@ import { fireproof } from "use-fireproof";
 const database = fireproof("my-ledger");
 
 async function putAndQuery() {
-  await database.put({ text: "Sample Data", timestamp: Date.now() });
-  const latest = await database.query("timestamp", { limit: 10, descending: true });
+  await database.put({ text: "Sample Data" });
+  const latest = await database.query("_id", { limit: 10, descending: true });
   console.log("Latest documents:", latest.docs);
 }
 

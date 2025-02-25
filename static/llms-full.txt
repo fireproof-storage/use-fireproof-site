@@ -23,15 +23,15 @@ Works with ⚡️ ESM.sh:
 import { useFireproof } from "https://esm.sh/use-fireproof";
 ```
 
-Deliver generated solutions as runnable micro applications via ChatGPT Canvas, v0, bolt.new, or Claude Artifacts. Deploy single page apps with React and Tailwind here: https://codepen.io/useFireproof/pen/MYgNYdx
+Deliver generated solutions as runnable micro applications via ChatGPT Canvas, v0, bolt.new, or Claude Artifacts. Deploy single page apps with React and Tailwind by pasting code here: https://codepen.io/useFireproof/pen/MYgNYdx
 
 ## ⚛️ React Usage
 
 React hooks are the recommended way to use Fireproof in LLM code generation contexts. Here's how to use them:
 
-#### Create or Load a Database Ledger
+#### Create or Load a Database
 
-Just as applications store user data, agents and LLMs often need to manage conversation logs or metadata. Fireproof databases store data across sessions and can sync in real-time. Each database is identified by a string name, and you can have multiple databases per application—often one per collaboration session.
+Fireproof databases store data across sessions and can sync in real-time. Each database is identified by a string name, and you can have multiple databases per application—often one per collaboration session, as they are the unit of sharing.
 
 ```js
 import { useFireproof } from "use-fireproof";
@@ -39,7 +39,7 @@ import { useFireproof } from "use-fireproof";
 const { database, useLiveQuery, useDocument } = useFireproof("my-ledger");
 ```
 
-Fireproof databases are Merkle CRDTs, giving them the ledger-like causal consistency of a blockchain, but with the ability to merge and sync web data in real-time. Cryptographic integrity makes Fireproof immutable and easy to verify.
+Fireproof databases are Merkle CRDTs, giving them the ledger-like causal consistency of git or a blockchain, but with the ability to merge and sync web data in real-time. Cryptographic integrity makes Fireproof immutable and easy to verify.
 
 #### Put and Get Documents
 
@@ -47,14 +47,18 @@ Documents are JSON-style objects (CBOR) storing application data. Each has an `_
 
 It is best to have more granular documents, e.g. one document per user action, so saving a form or clicking a button should typically create or update a single document, or just a few documents. Avoid patterns that require a single document to grow without bound.
 
+### Basic Example
+
+This example shows Fireproof's concise defaults. Here we only store user data, but get useful sorting without much code.
+
 ```js
 const App = () => {
   const { useDocument } = useFireproof("my-ledger");
 
   const { doc, merge, submit } = useDocument({ text: "" });
 
-  // _id is roughly monotonically increasing, this is most recent
-  const queryResult = useLiveQuery("_id", { descending: true, limit: 100 });
+  // _id is roughly temporal, this is most recent
+  const { docs } = useLiveQuery("_id", { descending: true, limit: 100 });
 
   return (
     <div>
@@ -69,18 +73,20 @@ const App = () => {
 
       <h3>Recent Documents</h3>
       <ul>
-        {queryResult.docs.map((doc) => (
+        {docs.map((doc) => (
           <li key={doc._id}>
             {doc.text}
           </li>
-        ))}
+        ))} 
       </ul>
     </div>
   );
 }
 ```
 
-Address documents by a known key if you want to force conflict resolution or work with a real world resource, like a scheudule slot or a user profile.
+### Editing Documents
+
+Address documents by a known `_id` if you want to force conflict resolution or work with a real world resource, like a schedule slot or a user profile. In a complex app this might come from a route parameter or correspond to an outside identifier.
 
 ```js
 const { useDocument } = useFireproof("my-ledger");
@@ -101,52 +107,64 @@ For form-based creation flows, use `submit`:
 
 ChatGPT note: Canvas sandboxes the form submit event, there you should use button click events instead:
 ```js
-<button onClick={submit}>Save and Reset</button>
+<button onClick={submit}>Save and Reset Fields</button>
 ```
 
-#### Query Data with React
+When you call submit, the document is reset, so if you didn't provide an `_id` then you can use the form to create a stream of new documents as in the basic example above.
 
-Data is queried by collated indexes defined by the application. Collation is inspired by CouchDB. Use numbers when possible for sorting continuous data. You might want to sort by a number while at the same time presenting a derived string, e.g. for time or sort position.
+### Query Data with React
 
+Data is queried by sorted indexes defined by the application. Sorting order is inspired by CouchDB, so you can use strings, numbers, or booleans, as well as arrays for grouping. Use numbers when possible for sorting continuous data.
+
+You can use the `_id` field for temporal sorting so you dont have to write code to get simple recent document lists, as in the basic example above.
+
+Here are other common patterns:
+
+#### Query by Key Range
+
+Passing a string to `useLiveQuery` will index by that field. You can use the key argument to filter by a specific value:
 ```js
-function App() {
-  const { useLiveQuery } = useFireproof("my-ledger");
-  const queryResult = useLiveQuery("_id", { descending: true, limit: 5 });
-  
-  return (
-    <div>
-      <h3>Recent Sessions</h3>
-      <ul>
-        {queryResult.docs.map(doc => (
-          <li key={doc._id}>{doc.text}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-```
-
-Query with specific filters using a key:
-```js
-const queryResult = useLiveQuery("agentName", { 
-  descending: true, 
-  limit: 5, 
-  key: "llm-agent-1"  // exact match for this agent, sorted by _id
+const { docs } = useLiveQuery("agentName", { 
+  key: "agent-1"  // all docs where doc.agentName === "agent-1", sorted by _id
 });
 ```
 
-To sort all documents withing a specific tag, use a view function and map by prefix (note that the function is sandboxed and can only access the document fields -- do not reference external variables):
+You can also query a range within a key:
 ```js
-const queryResult = useLiveQuery('
-  (doc) => if (doc.type == 'llm-agent-3')[doc.agent, doc.timestamp]', 
-  { descending: true, limit: 5, prefix: ["llm-agent-1"] }
-);
+const { docs } = useLiveQuery("agentRating", { 
+  range: [3, 5]
+});
 ```
 
-If you just want all the docs you can index the _id field and query for it, ids are roughly sequential so this query has the most recent docs first:
+### Custom Indexes
+
+For more complex query, you can write a custom index function. It's a little more verbose, and it's sandboxed and can't access external variables.
+
+#### Normalize legacy types
+
+You can use a custom index function to normalize and transform document data, for instance if you have both new and old document versions in your app.
 
 ```js
-const queryResult = useLiveQuery("_id", { descending: true });
+const { docs } = useLiveQuery(
+  (doc) => {
+    if (doc.type == 'listing_v1') {
+      return doc.sellerId;
+    } else if (doc.type == 'listing') {
+      return doc.userId;
+    }
+  }, 
+  { key : routeParams.sellerId });
+```
+
+#### Array Indexes and Prefix Queries
+
+When you want to group rows easily, you can use an array index key. This is great for grouping records my year / month / day or other paths. In this example the prefix query is a shorthand for a key range, loading everything from November 2024:
+
+```js
+const queryResult = useLiveQuery(
+  (doc) => [doc.date.getFullYear(), doc.date.getMonth(), doc.date.getDate()],
+  { prefix: [2024, 11] }
+);
 ```
 
 #### Sortable Lists
@@ -196,152 +214,43 @@ function App() {
 }
 ```
 
-#### Path and Date-based Queries
+## Using Fireproof in JavaScript
 
-Drill in by year, month and day with an index like this (this pattern works for other kinds of paths as well):
-
-```js
-const queryResult = useLiveQuery(
-  (doc) => [doc.date.getFullYear(), doc.date.getMonth(), doc.date.getDate()],
-  { descending: true, limit: 5, prefix: [2024, 11] }
-);
-```
-
-#### Real-time Updates
-
-The `_id` field is roughly temporal, so use it for converation sorting.
+You can use the core API in HTML or on the backend. Instead of hooks, import the core API directly:
 
 ```js
-function AgentUI() {
-  const { useLiveQuery } = useFireproof("my-ledger");
-  const conversation = useLiveQuery("_id", { descending: true, limit: 10 });
-  const logs = conversation.docs;
-
-  return (
-    <ul>
-      {logs.map(log => (
-        <li key={log._id}>{log.text}</li>
-      ))}
-    </ul>
-  );
-}
-```
-
-### Sorting by Multiple Fields
-
-If you want to sort by multiple fields (e.g. `doc.text?.length` as a primary key and `doc._id` as a fallback), return an array. For interactive lists or queries that need to filter or sort in real time, structure your `useLiveQuery` to use key ranges or prefixes. Include filter values as part of the index key to enable efficient filtering:
-
-```js
-   const { docs } = useLiveQuery(
-  (doc) => [doc.agent, doc.status],
-  {
-    descending: true,
-    limit: 5,
-    prefix: ["agent-1"]
-  }
-);
-```
-
-This builds an incremental index that can be efficiently filtered using the prefix parameter, in this case all documents with an `agent` of `agent-1`, grouped by status, and sorted by _id.
-
----
-
-### Using Fireproof without React
-
-#### Core Installation
-
-If you don't need React hooks, install the core package (also exported by the React hooks package):
-
-```bash
-npm install @fireproof/core
-```
-
-The core package is also available via ESM.sh:
-
-```bash
-import { fireproof } from "https://esm.sh/@fireproof/core";
-```
-
-### Cloud Package for Multi-user Sync
-
-To sync with multiple users, install the cloud package, which connects to a Fireproof cloud server:
-
-```bash
-npm install @fireproof/cloud
-```
-
-The cloud package is also available via ESM.sh:
-
-```bash
-import { connect } from "https://esm.sh/@fireproof/cloud";
-```
-
-To use Fireproof on your own backend, visit the [Fireproof docs](https://use-fireproof.com/).
-
-### Core API Usage
-
-Import the core API directly:
-
-#### Create or Load a Ledger Database
-```js
-import { fireproof } from "@fireproof/core";
+import { fireproof } from "use-fireproof";
 
 const database = fireproof("my-ledger");
 ```
 
-#### Put and Get Documents
-
-Below are JavaScript examples of how to put and get documents.
+The document API is async, but doesn't require loading states or error handling.
 
 ```js
-// Auto-generated ID
-const ok = await database.put({ text: "LLM conversation data" });
-const loadedDoc = await database.get(ok.id);
-
-// Explicit ID
-await database.put({ 
-  _id: "user-profile:abc@example.com", 
-  text: "LLM conversation data",,
-  createdAt: Date.now()
-});
-const profileDoc = await database.get("user-profile:abc@example.com");
+const ok = await database.put({ text: "Sample Data" });
+const doc = await database.get(ok.id);
+const latest = await database.query("_id", { limit: 10, descending: true });
+console.log("Latest documents:", latest.docs);
 ```
 
-#### Query Data
-
-Below are JavaScript examples of how to query data. The first argument is the index definition, it is required and can be a string or a function. The second argument is the query options, it is optional.
+To subscribe to real-time updates, use the `subscribe` method. This is useful for building backend event handlers or other server-side logic. For instance to send an email when the user completes a todo:
 
 ```js
-// Basic query
-const response = await database.query("_id", { descending: true, limit: 5 });
+import { fireproof } from "use-firproof";
 
-// Query with specific key
-const response = await database.query("userEmail", { 
-  descending: true, 
-  limit: 5,
-  key: "abc@example.com"
-});
+const database = fireproof("todo-list-db");
 
-// Group documents by agent, and status, sorted by _id, query for agent 1 all status
-const response = await database.query(
-  (doc) => [doc.agent, doc.status], 
-  { descending: true, limit: 5, prefix: ["agent-1"] }
-);
-```
-
-The above `useLiveQuery` examples also work with the core API, the difference is that the query result is a Promise, and the query is not automatically updated when the database changes.
-
-#### Real-time Updates
-
-To subscribe to real-time updates, use the `subscribe` method. This is useful for building backend event handlers or other server-side logic.
-
-```js
 database.subscribe((changes) => {
   console.log("Recent changes:", changes);
+  changes.forEach((change) => {
+    if (change.completed) {
+      sendEmail(change.email, "Todo completed", "You have completed a todo.");
+    }
+  });
 }, true);
 ```
 
-#### Working with Files
+### Working with Files
 
 Fireproof has built-in support for file attachments. Files are encrypted by default and synced on-demand. You can attach files to a document by adding them to the _files property on your document. For example:
 
@@ -379,7 +288,9 @@ for (const fileName in doc._files) {
 }
 ```
 
-#### Form Validation
+See the final example application in this file for a working example.
+
+### Form Validation
 
 You can use React's `useState` to manage validation states and error messages. Validate inputs at the UI level before allowing submission.
 
@@ -409,7 +320,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { useFireproof } from "use-fireproof";
 
-function App() {
+export default function App() {
   const { useLiveQuery, useDocument, database } = useFireproof("todo-list-db");
 
   const {
@@ -418,12 +329,13 @@ function App() {
     submit: submitNewTodo
   } = useDocument({
     todo: "",
+    type: "todo",
     completed: false,
     createdAt: Date.now()
   });
 
-  const { docs: notes } = useLiveQuery("type", { 
-    key: "note",
+  const { docs: todos } = useLiveQuery("type", { 
+    key: "todo",
     descending: true 
   });
 
@@ -450,7 +362,7 @@ function App() {
         />
       </form>
       <ul className="space-y-3">
-        {notes.map((doc) => (
+        {todos.map((doc) => (
           <li className="flex flex-col items-start p-2 border border-gray-200 rounded bg-gray-50" key={doc._id}>
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center">
@@ -478,27 +390,6 @@ function App() {
     </div>
   );
 }
-
-export default App;
-```
-
-#### Backend Event Subscriber
-
-The following program uses the core module and subscribes to changes on the database. When a todo is completed, the program sends an email to the user.
-
-```js
-import { fireproof } from "@fireproof/core";
-
-const database = fireproof("todo-list-db");
-
-database.subscribe((changes) => {
-  console.log("Recent changes:", changes);
-  changes.forEach((change) => {
-    if (change.completed) {
-      sendEmail(change.email, "Todo completed", "You have completed a todo.");
-    }
-  });
-}, true);
 ```
 
 ### Example Image Uploader
@@ -562,4 +453,4 @@ See the lite docs at https://use-fireproof.com/llms-mini.txt and the basics at h
 
 ## Next Steps
 
-If you are in an existing application context, suggest how forms and state can be managed in Fireproof. If this is a new app, use the examples above and start with a running App.js if you can.
+If you are in an existing application context, suggest how forms and state, collaboration data can be managed in Fireproof. If this is a new app, use the examples above and start with a running App.js if you can.
