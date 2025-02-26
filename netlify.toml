@@ -2,3 +2,8 @@
   from = "/"
   to = "/docs/welcome/"
   status = 301
+
+[[headers]]
+  for = "/llms.txt"
+  [headers.values]
+    access-control-allow-origin = "*"
