@@ -1,4 +1,4 @@
-# Fireproof Mini Guide
+# Fireproof Database Guide
 
 Fireproof is a lightweight embedded document database with encrypted live sync, designed to make browser apps easy.
 
