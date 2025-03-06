@@ -15,7 +15,7 @@ We'll start with a fresh React app. We'll use Vite, but we've tested with Next.j
 ```bash
 npm create vite@latest my-vite-fp-tutorial
 # ✔ Select a framework: › React
-# ✔ Select a variant: › JavaScript
+# ✔ Select a variant: › TypeScript
 cd my-vite-fp-tutorial
 ```
 
