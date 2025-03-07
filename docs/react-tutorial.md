@@ -114,18 +114,18 @@ const { doc: todo, merge: mergeTodo, save: saveTodo, reset: resetTodo } = useDoc
 
 The return value is essentially the return value of [`useState`](https://react.dev/reference/react/useState) but with a save document function added, in this case called `saveTodo`. A very common pattern in React is to use a state variable and a setter function to manage the state of a form. This hook is a convenience for that pattern, but it also handles saving the document to the ledger.
 
-The `useDocument` hook is used to create a new document with an empty `text` field. The `saveTodo` function is called when the form is submitted, and it saves the document to the ledger. The `setTodo` function is used to update the `text` field as the user types. 
+The `useDocument` hook is used to create a new document with an empty `text` field. The `saveTodo` function is called when the form is submitted, and it saves the document to the ledger. The `mergeTodo` function is used to update the `text` field as the user types. 
 
 ### Save the Todo
 
-Here is the JSX that renders the form. The common React pattern described above is used here: the input field is bound to `todo.text`, `setTodo` is called with a new text field when the input changes, and `saveTodo` is called when the form is submitted, persisting the new todo to the ledger.
+Here is the JSX that renders the form. The common React pattern described above is used here: the input field is bound to `todo.text`, `mergeTodo` is called with a new text field when the input changes, and `saveTodo` is called when the form is submitted, persisting the new todo to the ledger.
 
 ```jsx
 <div>
   <input 
     type="text" 
     value={todo.text} 
-    onChange={e => setTodo({ text: e.target.value })} 
+    onChange={e => mergeTodo({ text: e.target.value })} 
   />
   <button
     onClick={async () => {
@@ -137,7 +137,7 @@ Here is the JSX that renders the form. The common React pattern described above 
   </button>
 </div>
 ```
-Another convenience detail: `setTodo` is called to clear the input field (and reset to the `useDocument` call's initial value) after the todo is saved. This is a common pattern in React, and it's handled automatically by the hook. In our current application, we want the document managed by `useDocument` to be a new one each time, so we do not specify an `_id` in the initial document value. If the initial document value had an `_id` field, the hook would update that document instead of creating a new one with each save. [Read more about the `useDocument` hook](/docs/react-hooks/use-document.md).
+Another convenience detail: `resetTodo` is called to clear the input field (and reset to the `useDocument` call's initial value) after the todo is saved. This is a common pattern in React, and it's handled automatically by the hook. In our current application, we want the document managed by `useDocument` to be a new one each time, so we do not specify an `_id` in the initial document value. If the initial document value had an `_id` field, the hook would update that document instead of creating a new one with each save. [Read more about the `useDocument` hook](/docs/react-hooks/use-document.md).
 
 ### Where's My Data?
 
@@ -149,7 +149,7 @@ Once your data is replicated to the cloud, you can view and edit it with the Fir
 
 Here's the example to-do list that initializes the ledger and sets up automatic refresh for query results. The list of todos will redraw for all users in real-time. Replace the code in `src/App.js` with the following:
 
-```jsx
+```tsx
 import { useFireproof } from "use-fireproof";
 
 function App() {
