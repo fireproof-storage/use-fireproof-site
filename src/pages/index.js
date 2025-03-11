@@ -18,15 +18,33 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="https://fireproof.storage/try-free/"
+            to="https://chatgpt.com/g/g-67bd0ebe210081918561667c08662d03-vibe-coding-with-fireproof"
           >
-            Try Demo
+            ChatGPT
+          </Link>
+          <Link
+            className="button button--secondary button--lg margin-left--md"
+            to="https://v0.dev/chat/fork-of-fireproof-vibecoder-EBSLa63DQUd?b=b_OavhZ3eO2qn"
+          >
+            V0
+          </Link>
+          <Link
+            className="button button--secondary button--lg margin-left--md"
+            to="https://lovable.dev/projects/cbf5e6f5-0b4d-4467-93c3-c4d2a2c6922a"
+          >
+            Lovable
+          </Link>
+          <Link
+            className="button button--secondary button--lg margin-left--md"
+            to="https://bolt.new/~/bolt-vite-react-wvkz6fkw"
+          >
+            bolt.new
           </Link>
           <Link
             className="button button--primary button--lg margin-left--md"
-            to="/docs/react-tutorial"
+            to="https://use-fireproof.com/llms.txt"
           >
-            Get Started
+            LLMs.txt
           </Link>
         </div>
       </div>
