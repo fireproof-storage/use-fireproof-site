@@ -54,9 +54,9 @@ In this app, we use the top-level `useLiveQuery` hook to auto-refresh query resp
 
 ### Import the Hooks
 
-The first step is to import the hooks into your new app. In `src/App.js`, add the following line to the top of the file:
+The first step is to import the hooks into your new app. In `src/App.tsx`, add the following line to the top of the file:
 
-```js
+```tsx
 import { useFireproof } from 'use-fireproof'
 ```
 
@@ -68,7 +68,7 @@ Fireproof takes a build-first approach, so after your UI is running, you can con
 
 Now, inside of your component, you can get the hooks from `useFireproof` and use `useLiveQuery` to get a list of todos (it will start empty):
 
-```js
+```tsx
 function App() {
   const { useLiveQuery } = useFireproof("my-todo-app")
   const response = useLiveQuery('date', {limit: 10, descending: true})
@@ -80,9 +80,9 @@ In short, this is indexing the ledger by the `date` field, and will ignore any d
 The `useLiveQuery` hook will automatically refresh the `response` object when the ledger changes. The response object contains the `docs` array, which is the list of todos. The response also has `rows` which are the index rows, in this case they will have a `key` with the `date` field of the todo, and an `id` field with the document id of the todo. In more complex applications you can customize the `value` of these rows, for instance to provide full-name from first and last. [Read more about indexes and queries in the documentation.](/docs/database-api/index-query)
 
 
-In our application, the todos are displayed by the following JSX, which renders their `text` field. The event handler for updating the todo is written inline. Notice how `database.put` is used to toggle the `completed` field when the checkbox is clicked:
+In our application, the todos are displayed with the following code, which renders their `text` field. The event handler for updating the todo is written inline. Notice how `database.put` is used to toggle the `completed` field when the checkbox is clicked:
 
-```jsx
+```tsx
 <ul>
   {todos.map(todo => (
     <li key={todo._id}>
@@ -103,7 +103,7 @@ For convenience, the `database` object is attached to the `useLiveQuery` and `us
 
 Next, we'll add a form to create new todos. Notice how we get `useDocument` from `useFireproof` and call it with a callback that returns the initial document state:
 
-```js
+```tsx
 const { useDocument } = useFireproof("my-todo-app")
 const { doc: todo, merge: mergeTodo, save: saveTodo, reset: resetTodo } = useDocument(() => ({
     text: "",
@@ -118,9 +118,9 @@ The `useDocument` hook is used to create a new document with an empty `text` fie
 
 ### Save the Todo
 
-Here is the JSX that renders the form. The common React pattern described above is used here: the input field is bound to `todo.text`, `mergeTodo` is called with a new text field when the input changes, and `saveTodo` is called when the form is submitted, persisting the new todo to the ledger.
+Here is the code that renders the form. The common React pattern described above is used here: the input field is bound to `todo.text`, `mergeTodo` is called with a new text field when the input changes, and `saveTodo` is called when the form is submitted, persisting the new todo to the ledger.
 
-```jsx
+```tsx
 <div>
   <input 
     type="text" 
@@ -147,7 +147,7 @@ Once your data is replicated to the cloud, you can view and edit it with the Fir
 
 ## The Completed App
 
-Here's the example to-do list that initializes the ledger and sets up automatic refresh for query results. The list of todos will redraw for all users in real-time. Replace the code in `src/App.js` with the following:
+Here's the example to-do list that initializes the ledger and sets up automatic refresh for query results. The list of todos will redraw for all users in real-time. Replace the code in `src/App.tsx` with the following:
 
 ```tsx
 import { useFireproof } from "use-fireproof";
