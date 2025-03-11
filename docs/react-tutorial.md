@@ -66,18 +66,18 @@ Fireproof takes a build-first approach, so after your UI is running, you can con
 
 ### Query Todos
 
-Now, inside of your component, you can get the hooks from `useFireproof` and use `useLiveQuery` to get a list of todos (it will start empty):
+Now, inside of your component, you can get the hooks from `useFireproof` and use `useLiveQuery` to get a list of todos (it will start empty). We'll also grab `database` so we can update a todo with `database.put`.
 
 ```tsx
 function App() {
-  const { useLiveQuery } = useFireproof("my-todo-app")
+  const { useLiveQuery, database } = useFireproof("my-todo-app")
   const response = useLiveQuery('date', {limit: 10, descending: true})
   const todos = response.docs
 ```
 
-In short, this is indexing the ledger by the `date` field, and will ignore any documents that don't have a `date` field. Queries will be sorted by `date`. Learn more about queries in the [index and query documentation](/docs/database-api/index-query).
+In short, this is indexing the database by the `date` field, and will ignore any documents that don't have a `date` field. Queries will be sorted by `date`. Learn more about queries in the [index and query documentation](/docs/database-api/index-query).
 
-The `useLiveQuery` hook will automatically refresh the `response` object when the ledger changes. The response object contains the `docs` array, which is the list of todos. The response also has `rows` which are the index rows, in this case they will have a `key` with the `date` field of the todo, and an `id` field with the document id of the todo. In more complex applications you can customize the `value` of these rows, for instance to provide full-name from first and last. [Read more about indexes and queries in the documentation.](/docs/database-api/index-query)
+The `useLiveQuery` hook will automatically refresh the `response` object when the database changes. The response object contains the `docs` array, which is the list of todos. The response also has `rows` which are the index rows, in this case they will have a `key` with the `date` field of the todo, and an `id` field with the document id of the todo. In more complex applications you can customize the `value` of these rows, for instance to provide full-name from first and last. [Read more about indexes and queries in the documentation.](/docs/database-api/index-query)
 
 
 In our application, the todos are displayed with the following code, which renders their `text` field. The event handler for updating the todo is written inline. Notice how `database.put` is used to toggle the `completed` field when the checkbox is clicked:
@@ -89,7 +89,7 @@ In our application, the todos are displayed with the following code, which rende
       <input
         type="checkbox"
         checked={todo.completed}
-        onChange={() => useLiveQuery.ledger.put({ ...todo, completed: !todo.completed })}
+        onChange={() => database.put({ ...todo, completed: !todo.completed })}
       />
       {todo.text}
     </li>
@@ -101,10 +101,16 @@ For convenience, the `database` object is attached to the `useLiveQuery` and `us
 
 ### Create a New Todo
 
-Next, we'll add a form to create new todos. Notice how we get `useDocument` from `useFireproof` and call it with a callback that returns the initial document state:
+Next, we'll add a form to create new todos. First we'll update our`useFireproof` line to also get `useDocument`.
 
 ```tsx
-const { useDocument } = useFireproof("my-todo-app")
+const { useLiveQuery, database, useDocument } = useFireproof("my-todo-app")
+```
+
+Then we'll call `useDocument` with a callback that returns the initial document state:
+
+```tsx
+
 const { doc: todo, merge: mergeTodo, save: saveTodo, reset: resetTodo } = useDocument(() => ({
     text: "",
     date: Date.now(),
@@ -147,7 +153,7 @@ Once your data is replicated to the cloud, you can view and edit it with the Fir
 
 ## The Completed App
 
-Here's the example to-do list that initializes the ledger and sets up automatic refresh for query results. The list of todos will redraw for all users in real-time. Replace the code in `src/App.tsx` with the following:
+Here's the example to-do list that initializes the database and sets up automatic refresh for query results. The list of todos will redraw for all users in real-time. Replace the code in `src/App.tsx` with the following:
 
 ```tsx
 import { useFireproof } from "use-fireproof";
