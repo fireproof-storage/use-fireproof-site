@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Fireproof',
-  tagline: 'Vibe coding just got easier.',
+  title: 'Vibe coding just got easier',
+  tagline: 'Build apps instantly with our AI templates.',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
