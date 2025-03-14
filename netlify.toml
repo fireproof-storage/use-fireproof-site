@@ -12,3 +12,8 @@
   for = "/llms-*.txt"
   [headers.values]
     access-control-allow-origin = "*"
+
+[[headers]]
+  for = "/openrouter-llms.txt"
+  [headers.values]
+    access-control-allow-origin = "*"
