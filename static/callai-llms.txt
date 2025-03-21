@@ -6,10 +6,6 @@ The `callAI` helper function provides an easy way to make AI requests to OpenAI-
 
 ```bash
 npm install call-ai
-# or
-pnpm add call-ai
-# or
-yarn add call-ai
 ```
 
 ## API Key
