@@ -50,8 +50,6 @@ npm install use-fireproof
 
 In this example, our todo list application can create todo items, list them, and toggle their completed status. We'll start by modifying the component called `App` in `src/App.tsx`. This component is wired as the root of the application by Vite in `src/main.tsx` so it's best to work within it. By the end of the tutorial we will have replaced the whole file, but take it one step at a time, to learn how the pieces fit together. The final file is shared below.
 
-In this app, we use the top-level `useLiveQuery` hook to auto-refresh query responses (so your app dynamically refreshes with no extra work), and the `useDocument` hook to create new documents. These hooks can also be [configured by the optional `useFireproof` hook](/docs/react-hooks/use-fireproof), but most apps should start with the defaults.
-
 ### Import the Hooks
 
 The first step is to import the hooks into your new app. In `src/App.tsx`, add the following line to the top of the file:

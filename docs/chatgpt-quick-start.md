@@ -8,35 +8,22 @@ Fireproof is explicitly designed to be useful without requiring any setup or con
 
 ## AI writing Fireproof code
 
-If you are coding with Fireproof, try pasting this snippet into your AI enabled code editor. It should be able to stick to the API better when it sees this:
-
-```js
-Fireproof/API/Usage: import { fireproof } from '@fireproof/core'; const ledger = fireproof('app-ledger-name'); const ok = await ledger.put({ anyField: 'json' }); const doc = await ledger.get(ok.id); await ledger.del(doc._id); const all = await ledger.allDocs(); const result = ledger.query('anyField', {range : ['a', 'z']}); result.rows.map(({ key }) => key);
-```
-
-For React you can also paste:
-
-```jsx
-Fireproof/React/Usage: import { useLiveQuery, useDocument } from 'use-fireproof'; function App() { const result = useLiveQuery(doc => doc.word, { limit: 10 }); const [{ count }, setDoc, saveDoc] = useDocument({_id: 'count', count: 0}); return (<><p>{count} changes</p><input type='text' onChange={() => saveDoc({count: count + 1})} onSubmit={e => useLiveQuery.ledger.put({word: e.target.value})} /><ul>{result.map(row => (<li key={row.id}>{row.key}</li>))}</ul></>)}
-```
+If you are coding with Fireproof, try pasting our LLMS.txt into your AI enabled code editor. We've founding using  Fireproof makes one-shot success more likely.
 
 We've also created a "GPT" below, but we find writing code makes more sense in an AI enabled editor.
 
-## ⚛️ React Expert Builders
+## 🎨 Vibe Coding with ChatGPT Canvas
 
-The ChatGPT shared conversations feature allows users to link to in-flight conversations. For programmers, this is great because you can train a conversation to be an expert in a particular library, and then re-use that expertise over and over. For example, you could train a conversation to be an expert in web performance, and then use that conversation to help assess web performance in any app. Similarly, we've created a handful of Fireproof "expert builders" that you can use to kick start your development. Start by choosing a CSS framework, and then click the link to start a conversation with that expert builder.
+ChatGPT Canvas is a powerful tool for "vibe coding" - where you describe the app you want to build in natural language, and AI helps bring it to life. This approach is particularly effective with Fireproof because of its zero-setup nature. You can describe your data model, UI components, and functionality, and Canvas will generate complete, working code without worrying about complex backend configurations.
 
-[![ChatGPT Data Builder screenshot](./img/chatgpt.png)](https://chat.openai.com/g/g-Np4vF1Yz7-data-builder)
+The Canvas interface allows you to iteratively refine your app, making it perfect for rapid prototyping and experimentation. You can quickly test different approaches, UI designs, and data structures without getting bogged down in implementation details.
 
+[![ChatGPT Canvas with Fireproof](./img/chatgpt.png)](https://chatgpt.com/g/g-67bd0ebe210081918561667c08662d03-vibe-coding-with-fireproof)
 
-[Tailwind](https://tailwindcss.com) is a great choice for apps that want clean results and easy editing. [Tailwind builder for Fireproof React apps](https://chat.openai.com/g/g-Np4vF1Yz7-data-builder).
+Ready to try vibe coding with Fireproof? Check out our [Vibe Coding with Fireproof GPT](https://chatgpt.com/g/g-67bd0ebe210081918561667c08662d03-vibe-coding-with-fireproof) which is specially designed to help you create Fireproof-powered applications through natural conversation.
 
 ## 🏗 Start building
 
 The experts builders are preloaded with [code sandbox links](https://codesandbox.io/s/fireproof-react-antd-f6zbi7?file=/src/App.tsx) and API expertise, so you should be able to get a working prototype without leaving your browser.
 
 Once you've chosen a builder, click the button to continue the conversation. You can then use the conversation to generate code for your app.
-
-## 🤖 Train your own builders
-
-We encourage you to review the conversation history and learn how to create your own expert builders. If you create a new expert builder, please share it with us so we can add it to the list!
