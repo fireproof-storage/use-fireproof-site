@@ -16,7 +16,7 @@ Developers want to build features, not maintain complex stacks. Fireproof elimin
 
 ## Getting Started
 
-All it takes is `npm install @fireproof/core` and `import { fireproof } from '@fireproof/core'` in your project. Then you can open a ledger with `const ledger = await fireproof('my-ledger')` and write data with `ledger.put({ hello: 'world' })`. To query everything by date, `const { docs } = await ledger.query("created_at")`. Learn more about the [API](/docs/database-api/documents) or try the [React tutorial](/docs/react-tutorial).
+All it takes is `npm install @fireproof/core` and `import { fireproof } from '@fireproof/core'` in your project. Then you can open a database with `const database = await fireproof('my-db')` and write data with `database.put({ hello: 'world' })`. To query everything by date, `const { docs } = await database.query("created_at")`. Learn more about the [API](/docs/database-api/documents) or try the [React tutorial](/docs/react-tutorial).
 
 ### What is Fireproof?
 

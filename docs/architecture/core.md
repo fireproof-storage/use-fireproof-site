@@ -9,4 +9,5 @@ The functional core maintains a pipeline from actions to outputs. Each ledger op
 
 To learn more about the Merkle diff operations, see this article about the open-source CRDT Fireproof uses.
 Queries are inspired by Apache CouchDB’s map reduce, with application-defined JavaScript indexes stored in hash consistent search trees. This offers enough flexibility for most front-end apps, while the immutable ledger event log makes it straightforward to integrate with other index types like vector, geographic, or full text.
+
 The overall effect is a database API backed by a causally consistent ledger, regardless of the underlying infrastructure. This enables anyone, from self-taught entrepreneurs to infrastructure professionals, to write simple apps that run anywhere, with secure cryptographic proofs for all operations.
