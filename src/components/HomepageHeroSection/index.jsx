@@ -9,7 +9,7 @@ export default function HomepageHeroSection() {
   return (
     <header className={s.heroBanner}>
       <div className={s.heroContent}>
-        <h1 className={s.heroTitle}>Vibe coding<Link className={s.heroTitleLink} to='https://vibes.diy/'>*</Link> just got easier</h1>
+        <h1 className={s.heroTitle}>Vibe coding<Link className={s.heroTitleLink} to='https://fireproof.storage/posts/you-can-do-it!-fireproof-makes-the-backend-easy-for-vibe-coders/'>*</Link> just got easier</h1>
         <p className={s.heroSubTitle}>Build apps instantly with our <b>AI templates.</b></p>
         <div className={s.heroCodeBox + ' copytextWrap'}>
           <code className={s.heroCode + ' copytext'}>npm install use-fireproof</code>
