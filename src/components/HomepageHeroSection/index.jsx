@@ -1,19 +1,16 @@
 import React from 'react'
 import Link from '@docusaurus/Link'
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import { copyText } from '@site/src/utils/copyText'
 
 import s from './styles.module.css'
 import common from '@site/src/pages/index.module.css'
 
 export default function HomepageHeroSection() {
-  const { siteConfig } = useDocusaurusContext()
-
   return (
     <header className={s.heroBanner}>
       <div className={s.heroContent}>
-        <h1 className={s.heroTitle}>{siteConfig.title}</h1>
-        <p className={s.heroSubTitle}>{siteConfig.tagline}</p>
+        <h1 className={s.heroTitle}>Vibe coding<Link className={s.heroTitleLink} to='https://vibes.diy/'>*</Link> just got easier</h1>
+        <p className={s.heroSubTitle}>Build apps instantly with our <b>AI templates.</b></p>
         <div className={s.heroCodeBox + ' copytextWrap'}>
           <code className={s.heroCode + ' copytext'}>npm install use-fireproof</code>
           <div className={common.copyIcon + ' copyicon'} onClick={copyText}></div>

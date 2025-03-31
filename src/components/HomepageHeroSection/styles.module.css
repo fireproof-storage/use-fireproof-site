@@ -44,6 +44,15 @@
   line-height: 1.05;
 }
 
+.heroTitleLink {
+  color: inherit;
+}
+
+.heroTitleLink:hover {
+  color: #2C2C2C;
+  text-decoration: none;
+}
+
 .heroSubTitle {
   font-size: 22px;
   line-height: 1;
