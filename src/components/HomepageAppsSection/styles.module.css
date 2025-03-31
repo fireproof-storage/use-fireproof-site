@@ -1,0 +1,58 @@
+.applications {
+  text-align: center;
+}
+
+.applicationsTest {
+  max-width: 950px;
+  margin: 24px auto 30px auto;
+}
+
+.appsList {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-bottom: 100px;
+}
+
+.appImage {
+  box-shadow: 0px 4px 11px rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+  object-fit: contain;
+  margin-bottom: -0.5rem;
+}
+
+.app {
+  position: relative;
+}
+
+.appHint {
+  position: absolute;
+  top: -16px;
+  right: -26px;
+  opacity: 0;
+  padding: 8px 36px;
+  transform: rotate(-3.8deg);
+  z-index: 1;
+}
+
+.app:hover .appHint {
+  opacity: 1;
+}
+
+@media screen and (max-width: 1150px) {
+  .appsList {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .applicationsBr {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .appsList {
+    grid-template-columns: 1fr;
+  }
+}

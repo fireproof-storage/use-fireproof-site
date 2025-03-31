@@ -1,0 +1,144 @@
+.heroBanner {
+  position: relative;
+  background-color: #136C6B;
+  background-image: url('@site/static/img/hero-pattern.svg');
+  background-position: center center;
+  background-size: 600px;
+  overflow: hidden;
+}
+
+.heroContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  padding: 116px 60px 100px 60px;
+  color: #F3F2E9;
+  text-align: center;
+  z-index: 1;
+}
+
+.bluredLogo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('@site/static/img/blured-logo.svg');
+  background-position: 68% 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 0;
+  transform: scale(1.7);
+}
+
+.heroTitle {
+  font-size: 5.5vw;
+  max-width: 50%;
+  margin: 0;
+  line-height: 1.05;
+}
+
+.heroSubTitle {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 500;
+  margin: unset;
+}
+
+.heroCodeBox {
+  position: relative;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  background: rgba(242, 245, 251, 0.5);
+  border-radius: 8px;
+  padding: 8px 40px 8px 22px;
+  width: 390px;
+}
+
+.heroCode {
+  color: #2C2C2C;
+  background: unset;
+  border: unset;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.heroButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.heroButton {
+  padding: 12px 36px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  color: #2C2C2C;
+  background: #cfcdcd;
+  border: 1px solid #B8B8B8;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out
+}
+
+.heroButtonAccent {
+  color: #FFFFFF;
+  background: #2C2C2C;
+  border: 1px solid #2FA05E;
+  filter: drop-shadow(0px 2px 12px rgba(25, 232, 147, 0.8));
+}
+
+.heroButton:hover {
+  text-decoration: none;
+  color: #F3F2E9;
+  background-color: #2C2C2C;
+  border: 1px solid #2C2C2C;
+}
+
+.heroButtonAccent:hover {
+  color:  var(--fp-accent);
+  filter: drop-shadow(0px 4px 20px rgba(25, 232, 147, 0.9));
+}
+
+@media screen and (max-width: 1150px) {
+  .heroTitle {
+    font-size: 65px;
+    max-width: 560px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .heroTitle {
+    font-size: 12vw;
+  }
+
+  .heroSubTitle {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  .heroContent {
+    padding: 110px 36px 100px 36px;
+  }
+
+  .heroTitle {
+    max-width: unset;
+  }
+
+  .heroCodeBox {
+    width: 100%;
+  }
+
+  .heroButtons {
+    gap: 10px;
+  }
+}
