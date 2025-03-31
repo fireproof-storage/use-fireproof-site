@@ -79,21 +79,27 @@ const config = {
           },
           { to: '/docs/react-tutorial', label: 'Tutorial', position: 'left' },
           // {to: '/docs/faq', label: 'FAQ', position: 'left'},
-          {
-            label: 'Blog',
-            to: 'https://fireproof.storage/blog/',
-            position: 'left',
-          },
-          {
-            label: 'Demo Dashboard',
-            to: 'https://fireproof.storage/try-free/',
-            position: 'right',
-          },
+          // {
+          //   label: 'Blog',
+          //   to: 'https://fireproof.storage/blog/',
+          //   position: 'left',
+          // },
+          // {
+          //   label: 'Demo Dashboard',
+          //   to: 'https://fireproof.storage/try-free/',
+          //   position: 'right',
+          // },
           {
             href: 'https://github.com/fireproof-storage/fireproof',
             label: 'Star me on GitHub',
             position: 'right',
           },
+          {
+            label: 'Connect',
+            href: '/docs/welcome',
+            position: 'right',
+            className: 'nav-action-button',
+          }
         ],
       },
       footer: {

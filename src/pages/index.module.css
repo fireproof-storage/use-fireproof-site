@@ -1,23 +1,67 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
+/* global styles for all homepage sections */
 
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+.main {
+  margin: 0 40px 40px 40px;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.section {
+  max-width: 1266px;
+  margin: 60px auto;
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.subHeading {
+  font-size: 28px;
+  line-height: 38px;
+  color: var(--fp-text-primary);
+}
+
+.text {
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--fp-text-secondary);
+}
+
+.text a {
+  color: var(--fp-accent);
+  font-weight: 600;
+}
+
+.hint {
+  display: inline-block;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  padding: 8px 24px;
+  background: var(--fp-dec);
+  border: 1px solid #B9B8B8;
+  transform: rotate(-4.2deg);
+}
+
+[data-theme='dark'] .hint {
+  border: 1px solid #5a5a5a;
+}
+
+.copyIcon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  background-image: url('@site/static/img/copy-icon.svg');
+  background-size: cover;
+  cursor: pointer;
+}
+
+.copiedIcon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  background-image: url('@site/static/img/copied-icon.svg');
+  background-size: cover;
+  pointer-events: none;
+  display: none;
 }

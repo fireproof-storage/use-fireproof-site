@@ -1,0 +1,67 @@
+.docsLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 24px;
+  border: 1px solid var(--fp-border);
+  color: var(--fp-text-primary);
+  font-size: 19px;
+  line-height: 1.4;
+  font-weight: 500;
+  padding: 18px 60px 18px 32px;
+  margin-top: 14px;
+}
+
+.docsLink:hover {
+  background:  #F3F3F3;
+  text-decoration: none;
+  color: var(--fp-text-primary);
+}
+
+[data-theme='dark'] .docsLink:hover {
+  background:  #232325;
+}
+
+.docsImage {
+  width: 93px;
+  height: 46px;
+  transform: translateY(-2px);
+}
+
+[data-theme='dark'] .docsImage {
+  filter: invert(90%) brightness(130%) hue-rotate(180deg);
+}
+
+.docsLink::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  width: 13px;
+  height: 22px;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="13" height="22" viewBox="0 0 13 22" fill="none"><path opacity="0.4" d="M1.5 2L10.5 11L1.5 20" stroke="black" stroke-width="3"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: translateY(-50%);
+}
+
+[data-theme='dark'] {
+  .docsLink::after {
+    filter: invert(90%) brightness(120%);
+  }
+}
+
+.emoji {
+  font-size: 39px;
+  line-height: 46px;
+}
+
+@media screen and (max-width: 550px) {
+  .tutorialLink {
+    flex-direction: column;
+    align-items: start;
+    gap: 4px;
+    font-size: 16px;
+  }
+}
