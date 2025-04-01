@@ -23,6 +23,9 @@ https://picsum.photos/id/237/200/300
 ```
 
 ### Static Random Image
+
+Use this if you are putting the URL in Fireproof.
+
 ```
 https://picsum.photos/seed/picsum/200/300
 ```
