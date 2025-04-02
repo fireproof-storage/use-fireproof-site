@@ -97,6 +97,7 @@ body {
   }
 }\*/
 
+.hiddenBecauseMoved,
 .hiddenBecauseDeprecated {
   display: none;
 }
