@@ -96,3 +96,7 @@ body {
     background-rotate: 270deg;
   }
 }\*/
+
+.hiddenBecauseDeprecated {
+  display: none;
+}

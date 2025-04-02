@@ -1,6 +1,7 @@
 {
   "label": "Database API",
   "position": 6,
+  "className": "hiddenBecauseDeprecated",
   "link": {
     "type": "generated-index",
     "description": "Interact with data and queries."
