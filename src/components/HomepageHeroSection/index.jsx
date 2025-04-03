@@ -10,7 +10,7 @@ export default function HomepageHeroSection() {
     <header className={s.heroBanner}>
       <div className={s.heroContent}>
         <h1 className={s.heroTitle}>Vibe coding<Link className={s.heroTitleLink} to='https://fireproof.storage/posts/you-can-do-it!-fireproof-makes-the-backend-easy-for-vibe-coders/'>*</Link> just got easier</h1>
-        <p className={s.heroSubTitle}>Build apps instantly with our <b>AI templates.</b></p>
+        <p className={s.heroSubTitle}>Our <a className="decoration-none" href="https://use-fireproof.com/llms.txt"><strong>LLMs.txt</strong></a> makes one-shot app generation easier in any environment.</p>
         <div className={s.heroCodeBox + ' copytextWrap'}>
           <code className={s.heroCode + ' copytext'}>npm install use-fireproof</code>
           <div className={common.copyIcon + ' copyicon'} onClick={copyText}></div>
