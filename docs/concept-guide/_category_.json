@@ -1,6 +1,7 @@
 {
   "label": "Concept Guide",
   "position": 3,
+  "className": "hiddenBecauseDeprecated",
   "link": {
     "type": "generated-index",
     "description": "Seamlessly integrate live data into responsive, multi-user apps with ease. This guide will walk you through the best practices for productive development with Fireproof."

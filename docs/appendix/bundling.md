@@ -1,6 +1,5 @@
 ---
 sidebar_position: 10
-sidebar_class_name: hiddenBecauseMoved
 ---
 # Bundler Compatibility
 
