@@ -1,6 +1,7 @@
 {
   "label": "React Hooks",
   "position": 5,
+  "className": "hiddenBecauseDeprecated",
   "link": {
     "type": "generated-index",
     "description": "Write interactive React apps with no configuration."
