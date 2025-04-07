@@ -3,6 +3,11 @@
   to = "/docs/welcome/"
   status = 301
 
+[[redirects]]
+  from = "/docs/react-tutorial"
+  to = "/tutorials/react/"
+  status = 301
+
 [[headers]]
   for = "/llms.txt"
   [headers.values]
