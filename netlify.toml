@@ -4,8 +4,13 @@
   status = 301
 
 [[redirects]]
+  from = "/docs/bundling"
+  to = "/docs/appendix/bundling"
+  status = 301
+
+[[redirects]]
   from = "/docs/react-tutorial"
-  to = "/tutorials/react/"
+  to = "/docs/tutorials/react"
   status = 301
 
 [[headers]]
