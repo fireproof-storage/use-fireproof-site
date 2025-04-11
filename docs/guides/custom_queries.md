@@ -7,14 +7,14 @@ sidebar_position: 1
 
 Fireproof provides a powerful querying API that allows you to search and retrieve data quickly. This is done using the `database.query` method. (In React, there's a [`useLiveQuery`](/docs/reference/react-hooks/use-live-query) function that takes the same arguments.) (DOUBLECHECK)
 
-Before we get started, let's start a new database and make some data to work with. As always, we have todos. This time, however, we're on a sailing cargo ship in the late 19th century.
+Let's start off with a new database and make some data to work with. As always, we have todos. This time, however, we're on a sailing cargo ship in the late 19th century.
 
 ```jsx live noInline
 
 const Setup = () => {
 
-    const { database } = useFireproof("ship-todos-3");
-    const [todos, setTodos] = useState([]);
+    const { database } = useFireproof();
+    const [todoCount, setTodoCount] = useState(0);
 
     const seed = async () => {
         await Promise.all([
@@ -33,20 +33,23 @@ const Setup = () => {
         ].map((todo, i) => {
             database.put({ _id: i+1, ...todo })
         }));
-        const { rows } = await database.allDocs();
-        setTodos(rows.map((r) => r.value));
+        const { rows } = await database.query('task');
+        setTodoCount(rows.length);
     }
 
     return <>
+        <p>{ todoCount } tasks in database</p>
         <button onClick={seed}>Seed database</button>
-        <p>
-            { todos.length } tasks in database
-        </p>
     </>
 }
 
 render(<Setup/>)
 ```
+
+:::info
+  By calling `useFireproof` with no arguments we're creating an in-memory database. The data we create will carry over from one step to the next, but will not save between refreshes of this page.
+:::
+
 
 As we've seen (DOUBLECHECK), the simplest way to use `database.query` is to pass the string name of a key you're interested in.
 
