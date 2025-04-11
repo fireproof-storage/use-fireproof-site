@@ -1,9 +1,8 @@
 ---
-sidebar_position: 10
-sidebar_class_name: hiddenBecauseDeprecated
+sidebar_position: 1
 ---
 
-# ChatGPT Builders
+# Vibe Coding Tutorial
 
 Fireproof is explicitly designed to be useful without requiring any setup or configuration. This makes it especially easy for ChatGPT to use, because Fireproof apps don't need to have a lot of hidden logic outside of the React code. Keep reading for pointers on how to leverage ChatGPT when writing code that uses Fireproof.
 

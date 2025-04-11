@@ -15,7 +15,7 @@ For the most consistent experience, you can use our pre-bundled IIFE build avail
 <script src="https://cdn.jsdelivr.net/npm/@fireproof/core/dist/browser/fireproof.iife.js"></script>
 ```
 
-You can see [the short example program that is used to validate the browser build.](https://github.com/fireproof-storage/fireproof/blob/main/packages/fireproof/test/www/todo.html)
+You can see [the short example program that is used to validate the browser build.](https://github.com/fireproof-storage/fireproof/blob/main/tests/www/todo.html)
 
 
 ## Vite

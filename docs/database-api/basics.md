@@ -70,4 +70,4 @@ const unsub = database.subscribe((updates) => {
 })
 ```
 
-You can read more about the [database API](./database) and the [document API](./documents) in the API docs. For getting started with React, see the [React tutorial](/docs/react-tutorial). Fireproof runs almost anywhere. Read about [framework and bundler support](/docs/bundling).
+You can read more about the [database API](./database) and the [document API](./documents) in the API docs. For getting started with React, see the [React tutorial](/docs/react-tutorial). Fireproof runs almost anywhere. Read about [framework and bundler support](/docs/appendix/bundling).
