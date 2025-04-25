@@ -1,44 +1,58 @@
 ---
-title: Custom Queries
+title: Querying Data
 sidebar_position: 1
 ---
 
-# Querying Data
+# Querying Data in Fireproof
 
-Fireproof provides a powerful querying API that allows you to search and retrieve data quickly. This is done using the `database.query` method. (In React, there's a [`useLiveQuery`](/docs/reference/react-hooks/use-live-query) function that takes the same arguments.) (DOUBLECHECK)
+Fireproof provides a powerful querying API that allows you to search and retrieve data quickly. This is done using the `database.query` method and its sibling `database.useLiveQuery` for subscribing to latest results in a React component.
 
-Let's start off with a new database and make some data to work with. As always, we have todos. This time, however, we're on a sailing cargo ship in the late 19th century.
+## Basic Query Types
+
+### Simple Key Queries
+
+The simplest way to query is by passing a string key name:
+
+```jsx
+// Get all documents with a specific key
+const results = await database.query('type')
+```
+
+
 
 ```jsx live noInline
-
 const Setup = () => {
 
-    const { database } = useFireproof();
-    const [todoCount, setTodoCount] = useState(0);
+    const { useLiveQuery, database } = useFireproof("ship");
 
     const seed = async () => {
         await Promise.all([
-            {role: "sailor", task: "Coil halyards"},
-            {role: "sailor", task: "Pump the bilge"},
-            {role: "sailor", task: "Scrub the deck"},
-            {role: "sailor", task: "Daydream of shore leave"},
-            {role: "cook", task: "Boil coffee"},
-            {role: "cook", task: "Stir the porridge"},
-            {role: "navigator", task: "Take morning sights"},
-            {role: "navigator", task: "Check the compass"},
-            {role: "navigator", task: "Wind the clocks"},
-            {role: "navigator", task: "Argue with the captain"},
-            {role: "captain", task: "Argue with the navigator"},
-            {role: "captain", task: "Lock up the rum"}
+            {role: "sailor", task: "Coil halyards", times: 3},
+            {role: "sailor", task: "Pump bilge", times: 2},
+            {role: "sailor", task: "Scrub deck", times: 3},
+            {role: "sailor", task: "Daydream of shore", times: 9},
+            {role: "cook", task: "Boil coffee", times: 1},
+            {role: "cook", task: "Stir porridge", times: 2},
+            {role: "navigator", task: "Take sights", times: 2},
+            {role: "navigator", task: "Check compass", times: 6},
+            {role: "navigator", task: "Wind clocks", times: 1},
+            {role: "navigator", task: "Argue with captain", times: 0},
+            {role: "mate", task: "Look for key to rum", times: 5},
+            {role: "captain", task: "Argue with navigator", times: 3},
+            {role: "captain", task: "Lock up rum", times: 1}
         ].map((todo, i) => {
-            database.put({ _id: i+1, ...todo })
+            database.put({
+                _id: i+1,
+                completed: false,
+                ...todo
+            })
         }));
-        const { rows } = await database.query('task');
-        setTodoCount(rows.length);
     }
 
+    const { rows } = useLiveQuery('task');
+
     return <>
-        <p>{ todoCount } tasks in database</p>
+        <p>{ rows.length } tasks in database</p>
         <button onClick={seed}>Seed database</button>
     </>
 }
@@ -47,13 +61,30 @@ render(<Setup/>)
 ```
 
 :::info
-  By calling `useFireproof` with no arguments we're creating an in-memory database. The data we create will carry over from one step to the next, but will not save between refreshes of this page.
+  By using Fireproof in these examples, the data in these examples will stick around in your browser.
 :::
 
 
-As we've seen (DOUBLECHECK), the simplest way to use `database.query` is to pass the string name of a key you're interested in.
+## Basic Queries
 
-The `mapFn` is a synchronous function that defines the mapping of your data, and `params` is an optional object that can be used to specify query parameters.
+The simplest way to use `database.query` is to pass the string name of a key you're interested in. We also have some convienient options we can pass in if, say, we want to sort the tasks alphabetically.
+
+
+```jsx live noInline
+const Alphabetical = () => {
+    const { useLiveQuery, database } = useFireproof("ship");
+    const { rows } = useLiveQuery('task', { descending: false });
+    return <em>
+        { rows.map((row) => row.doc.task).join(', ') }
+    </em>
+}
+
+render(<Alphabetical/>)
+```
+
+For doing more than just sorting and retrieving documents, `query` and `useLiveQuery` can be told how to filter, transform, or otherwise _map_ your documents into a more query result.
+
+For that, we have to pass in a `mapFn`. The `mapFn` is a synchronous function that defines the mapping of your data, and `params` is an optional object that can be used to specify query parameters.
 
 Here's an example of querying data from a database that stores todos on multiple lists:
 
@@ -110,72 +141,121 @@ Valid paramaters you can use are:
 }
 ```
 
-## External Indexers
 
-Fireproof is designed to make indexing in external indexers efficient and seamless. Each ledger tracks it's change history and provides a feed of changes since any clock. If you don't provide a clock, you'll get all changes. Each change includes it's clock, so if you keep track of a high water mark, you can safely restart your indexing process and know you aren't missing any updates.
+### Map Function Queries
 
-For single-user workloads it can often be enough to index the local dataset on page load, and use your index in memory. For larger data use-cases you probably want to use an indexer than remember everything it has added, and incrementally add new items as changes occur.
+For more complex queries, you can use a map function that defines how to index and filter your data:
 
-The technique here can also be used with [vector indexers](https://github.com/tantaraio/voy) to manage LLM queries.
+```jsx
+const mapFn = (doc, emit) => {
+  if (doc.type === 'todo') {
+    emit(doc.listId, doc)
+  }
+}
 
-### Flexsearch for fulltext indexing
+const results = await database.query(mapFn)
+```
 
-Fireproof ships with a flexsearch integration. The included `withFlexsearch` function is a utility that allows you to add full-text search capabilities to your Fireproof ledger using the Flexsearch library. This function takes in a Fireproof ledger object and returns an object with a single method: search.
+The `mapFn` receives each document and can emit key-value pairs to build the index. The `emit` function takes two parameters:
+- `key`: The index key to store (can be a string, number, or array)
+- `value`: The value to store (typically the document or a subset of it)
+
+## Query Parameters
+
+The query API accepts several parameters to control the results:
 
 ```js
-const { Index } = flexsearch
-
-/**
- * Returns an object containing a search function that allows searching a Fireproof ledger with * Flexsearch.
- * @param {Object} ledger - The Fireproof ledger object to add search functionality to.
- * @param {Object} [flexsearchOptions={}] - Optional Flexsearch options object.
- * @returns {Object} An object containing a single search function.
- **/
-function withFlexsearch(ledger, flexsearchOptions = {}) {
-  const index = new Index(flexsearchOptions)
-  let clock = null
-  const search = async (query, options) => {
-    const changes = await ledger.changes(clock)
-    clock = changes.clock
-    for (let i = 0; i < changes.rows.length; i++) {
-      const { key, value } = changes.rows[i]
-      await index.add(key, value.message)
-    }
-    return index.search(query, options)
-  }
-  return { search }
+const params = {
+  descending: boolean,    // Sort in descending order
+  limit: number,         // Maximum number of results
+  includeDocs: boolean,  // Include full documents in results
+  range: [start, end],   // Query within a key range
+  key: value,            // Query for exact key match
+  keys: [value1, value2], // Query for multiple exact keys
+  prefix: value          // Query for keys with prefix
 }
 ```
 
-To use the `withFlexsearch` function, you should call it with a Fireproof ledger object as the first argument. An optional second argument can be passed as an object to configure Flexsearch.
+### Range Queries
 
-```js
-const flexed = withFlexsearch(ledger, {
-  encode: 'icase',
-  tokenize: 'full'
-})
+Query documents within a specific range:
+
+```jsx
+// Get todos between dates
+const results = await database.query(
+  doc => doc.type === 'todo' && [doc.listId, doc.date],
+  {
+    range: [
+      [listId, startDate],
+      [listId, endDate]
+    ]
+  }
+)
 ```
 
-The returned object `flexed` will contain a single method, `search`. This method can be used to search for documents in the ledger that contain a given query string.
+### Prefix Queries
 
-```js
-const results = await flexed.search('red')
+Query documents with keys that share a common prefix:
+
+```jsx
+// Get all todos from a specific list
+const results = await database.query(
+  doc => doc.type === 'todo' && [doc.listId, doc._id],
+  {
+    prefix: [listId]
+  }
+)
 ```
 
-The `search` method takes two arguments: the query string and an optional `options` object. The options object can be used to configure the search algorithm.
+## Advanced Query Patterns
 
-### How it works
+### Compound Keys
 
-The `withFlexsearch` function creates a Flexsearch index object and keeps it updated with changes to the Fireproof ledger. It does this by listening to changes in the ledger and adding or removing documents from the index as needed.
+Use arrays as keys to create compound indexes:
 
-The `search` method simply searches the Flexsearch index for documents that match the given query string. Because the index is always up-to-date with the ledger, searches are fast and accurate.
+```jsx
+// Index by category and date
+const results = await database.query(
+  doc => [doc.category, doc.date, doc._id],
+  { descending: true }
+)
+```
 
-### Connection to GraphQL or Vector index
+### Filtering and Transformation
 
-The technique used in `withFlexsearch` for adding search functionality to a Fireproof ledger could also be used for connecting to a GraphQL query index. Instead of using Flexsearch to index the data, you would use a GraphQL query index such as Elasticsearch or Apollo Studio.
+The map function can filter and transform data before indexing:
 
-To implement this, you would need to create a new function, similar to `withFlexsearch`, that listens to changes in the Fireproof ledger and updates the GraphQL index accordingly. This function could be called `withGraphQL`.
+```jsx
+const results = await database.query(
+  doc => {
+    if (doc.type === 'todo' && !doc.archived) {
+      // Transform the document before indexing
+      emit(doc._id, {
+        id: doc._id,
+        text: doc.text,
+        completed: doc.completed
+      })
+    }
+  }
+)
+```
 
-Similar to withFlexsearch, `withGraphQL` would take a Fireproof ledger object as its first argument and an optional configuration object as its second argument. The returned object would contain a single method, `query`, which could be used to perform GraphQL queries on the indexed data.
+### Pagination
 
-To ensure that the GraphQL index is always up-to-date with the Fireproof ledger, you would need to listen to changes in the ledger and update the index with any new data. This can be done by copying the `changes` code from `withFlexsearch`. Once the data has been indexed, you can use GraphQL to query it. Because the index is always up-to-date with the Fireproof ledger, you can be sure that your queries will return accurate results.
+Use `limit` and the last key from previous results to implement pagination:
+
+```jsx
+async function getPage(lastKey = null) {
+  const results = await database.query(
+    'type',
+    {
+      limit: 10,
+      startkey: lastKey,
+      descending: true
+    }
+  )
+  return results
+}
+```
+
+
