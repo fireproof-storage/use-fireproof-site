@@ -24,7 +24,7 @@ Prompt and image versions are automatically tracked in the Fireproof database wi
 
 ## List by ID
 
-You can display stored images by their ID:
+Display stored images by their ID. Ensure you do this, so users can find the images they created.
 
 ```jsx
 import { useFireproof } from 'use-fireproof';
