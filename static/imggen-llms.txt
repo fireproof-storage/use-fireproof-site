@@ -32,7 +32,7 @@ import { ImgGen } from 'use-vibes';
 
 function MyComponent() {
   const { database, useLiveQuery } = useFireproof("my-db-name");
-   const { docs: imageDocuments } = useLiveQuery<ImageDocument>('type', {
+   const { docs: imageDocuments } = useLiveQuery('type', {
     key: 'image',
     descending: true,
   });
