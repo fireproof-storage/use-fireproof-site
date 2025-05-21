@@ -40,6 +40,18 @@ function MyComponent() {
 }
 ```
 
+4. **With an _id prop** - Loads a specific image from the database (no form shown):
+
+If there is no image generated for the document yet, but it has a `prompt` field, it will generate a new image with the prompt.
+
+```jsx
+import { ImgGen } from 'use-vibes';
+
+function MyComponent() {
+  return <ImgGen _id="my-image-id" />; // Loads specific image by ID
+}
+```
+
 Images and prompts are tracked in a Fireproof database with a `type` of `image`. If a database is not provided, it uses `"ImgGen"` as the database name.
 
 ## List by ID
