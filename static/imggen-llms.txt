@@ -1,26 +1,46 @@
 # ImgGen Component
 
-## Generate from a prompt
+## Basic Usage
 
-Generate images with AI by suppplying a prompt.
+The ImgGen component can be used in three ways:
+
+1. **With no props** - Shows a form UI for users to enter a prompt and/or upload images:
 
 ```jsx
-import { useFireproof } from 'use-fireproof';
 import { ImgGen } from 'use-vibes';
 
 function MyComponent() {
-  const { database } = useFireproof("my-db-name");
+  return <ImgGen />; // Shows built-in form for prompt entry and image upload
+}
+```
+
+2. **With a prompt prop** - Immediately generates an image (no form shown):
+
+```jsx
+import { ImgGen } from 'use-vibes';
+
+function MyComponent() {
+  return <ImgGen prompt="A sunset over mountains" />; // Direct generation, no form
+}
+```
+
+3. **With images prop** - Edits or combines images with AI (no form shown):
+
+```jsx
+import { ImgGen } from 'use-vibes';
+
+function MyComponent() {
+  const [files, setFiles] = useState([]);
   return (
-    <div>
-      <ImgGen prompt="A sunset over mountains" database={database} />
-    </div>
+    <ImgGen 
+      prompt="Create a gift basket with these items" 
+      images={files} // Array of File objects
+    />
   );
 }
 ```
 
-This will generate an image and display it in the component. It also provides a progress bar and the ability to edit the prompt or regenerate the image.
-
-Prompt and image versions are automatically tracked in the Fireproof database with a `type` of `image`. If a database is not provided, the component uses the database named `"ImgGen"`.
+Images and prompts are tracked in a Fireproof database with a `type` of `image`. If a database is not provided, it uses `"ImgGen"` as the database name.
 
 ## List by ID
 
