@@ -59,14 +59,14 @@ function MyComponent() {
 
   return (
     <div>
-      <ImgGen prompt="A sunset over mountains" database={database} />
+      <ImgGen database={database} />
       {imageDocuments.length > 0 && (
         <div className="history">
           <h3>Previously Generated Images</h3>
           <ul className="image-list">
             {imageDocuments.map((doc) => (
               <li key={doc._id} className="image-item">
-                <ImgGen _id={doc._id} />
+                <ImgGen _id={doc._id} database={database} />
               </li>
             ))}
           </ul>
